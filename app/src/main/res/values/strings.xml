@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Przewodnik Turystyczny</string>
+    <string name="title_activity_maps">Przewodnik Turystyczny</string>
+    <string name="title_activity_loading">Pobieranie danych</string>
+    <string name="creatingDatabase">Tworzenie bazy danych…</string>
+    <string name="findButton">Znajdź</string>
+</resources>
