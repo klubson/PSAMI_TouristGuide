@@ -6,13 +6,17 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ArrayAdapter
-import android.widget.SearchView
+import android.widget.AutoCompleteTextView
+import android.widget.Button
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.przewodnikpotoruniu.DBHelper
-import com.example.przewodnikpotoruniu.Object
 import com.example.touristguide.BuildConfig.GOOGLE_MAPS_API_KEY
 import com.example.touristguide.databinding.ActivityMapsBinding
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -23,6 +27,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 
@@ -33,11 +38,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
     private lateinit var mMap: GoogleMap
     private lateinit var placesClient: PlacesClient
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var searchView: SearchView
+    private lateinit var textView: AutoCompleteTextView
     private lateinit var databaseHandler: DBHelper
+    private lateinit var imageButton: ImageButton
+    private lateinit var webView: WebView
     private var locationPermissionGranted = false
     private var lastKnownLocation: Location? = null
-    private val defaultLocation = LatLng(52.40995297951002, 16.92583832833938)
+    private val defaultLocation = LatLng(16.92583832833938, 52.40995297951002)
+    var dataNamesOnly: ArrayList<String>? = null
+    var objectsAdapter : ArrayAdapter<String>? = null
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,39 +58,56 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         placesClient = Places.createClient(this)
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        databaseHandler = DBHelper(this)
 
-        val data = databaseHandler.objectNames
-
-        val objectsAdapter : ArrayAdapter<String> = ArrayAdapter(
-            this, android.R.layout.simple_list_item_1, data)
-
-        binding.listView.adapter = objectsAdapter
-
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                binding.searchView.clearFocus()
-                if(data.contains(query)){
-                    objectsAdapter.filter.filter(query)
-                }
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                objectsAdapter.filter.filter(newText)
-                return false
-            }
-
-        })
-
-
-
-
+        initializeComponents()
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
 
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    fun initializeComponents(){
+        databaseHandler = DBHelper(this)
+        dataNamesOnly = databaseHandler.objectNames
+        objectsAdapter = ArrayAdapter(
+            this, android.R.layout.simple_dropdown_item_1line, dataNamesOnly!!
+        )
+        textView = findViewById(R.id.autoCompleteTextView)
+        textView.setAdapter(objectsAdapter)
+        textView.setOnItemClickListener { _, _, _, id ->
+            val chosenObjectName = dataNamesOnly?.get(id.toInt())
+            val chosenObject = chosenObjectName?.let { databaseHandler.getObjectByItsName(it) }
+            if (chosenObject != null) {
+                val newLocation = Location("")
+                newLocation.latitude = chosenObject.latitude!!
+                newLocation.longitude = chosenObject.longitude!!
+                onLocationChanged(newLocation)
+                chosenObject.url?.let { launchWikiPage(it) }
+            }
+        }
+        imageButton = findViewById(R.id.imageButton)
+        imageButton.setOnClickListener {
+            imageButton.visibility = View.INVISIBLE
+            textView.visibility = View.VISIBLE
+        }
+        webView = findViewById(R.id.webView)
+        webView.settings.javaScriptEnabled = true
+        webView.webViewClient = object : WebViewClient() {
+            @Deprecated("Deprecated in Java")
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                if (url != null) {
+                    view?.loadUrl(url)
+                }
+                return true
+            }
+        }
+    }
+
+    fun launchWikiPage(address: String){
+        webView.visibility = View.VISIBLE
+        webView.loadUrl(address)
     }
 
     /**
@@ -97,13 +123,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         mMap = googleMap
         getLocationPermission()
         getDeviceLocation()
-        //mMap.addMarker(MarkerOptions().position(defaultLocation).title("Marker in Sydney"))
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation))
     }
     override fun onLocationChanged(location: Location) {
-        val latLng = LatLng(location.latitude, location.longitude)
-        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 40f)
+        val latLng = LatLng(location.longitude, location.latitude)
+        //val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 50.0f)
+        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(latLng.longitude - 10.0, latLng.latitude), 50.0f)
         mMap.animateCamera(cameraUpdate)
+        mMap.addMarker(MarkerOptions().position(latLng))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
     }
 
     private fun getLocationPermission() {
@@ -115,10 +142,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
         }
-    }
-
-    private fun initComponents(){
-
     }
 
     @SuppressLint("MissingPermission")
@@ -149,7 +172,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
     }
 
     companion object {
-        private const val DEFAULT_ZOOM = 50
+        private const val DEFAULT_ZOOM = 5
         private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
     }
 

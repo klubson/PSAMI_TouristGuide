@@ -116,34 +116,25 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME, null, 
             return objectNames
         }
 
-    @SuppressLint("Recycle", "Range")
-    fun getObjectsByName(name: String): ArrayList<Object> {
-        val objects = ArrayList<Object>()
-        val splittedName = name.split(" ")
+    @SuppressLint("Range", "Recycle")
+    fun getObjectByItsName(name : String): Object? {
+        val selectQuery = "SELECT * FROM $OBJECT_TABLE_NAME WHERE $OBJECT_NAME = '$name'"
         val db = this.writableDatabase
-        for (word : String in splittedName){
-            val selectQuery = "SELECT * FROM $OBJECT_TABLE_NAME WHERE $OBJECT_NAME LIKE '%$name%'"
-            val cursor = db.rawQuery(selectQuery, null)
-            if (cursor.moveToFirst()){
-                do {
-                    val obj = Object()
-                    obj.id = cursor.getInt(cursor.getColumnIndex(OBJECT_ID))
-                    obj.name = cursor.getString(cursor.getColumnIndex(OBJECT_NAME))
-                    obj.latitude = cursor.getString(cursor.getColumnIndex(OBJECT_LATITUDE)).toDouble()
-                    obj.longitude = cursor.getString(cursor.getColumnIndex(OBJECT_LONGITUDE)).toDouble()
-                    obj.avgtime = cursor.getString(cursor.getColumnIndex(OBJECT_AVGTIME)).toDouble()
-                    obj.category = cursor.getString(cursor.getColumnIndex(OBJECT_CATEGORY))
-                    obj.url = cursor.getString(cursor.getColumnIndex(OBJECT_URL))
-                    if (!obj.isInList(objects)){
-                        objects.add(obj)
-                    }
-
-                } while (cursor.moveToNext())
-            }
-
-        }
-        return objects
+        val cursor = db.rawQuery(selectQuery, null)
+        return if(cursor.moveToFirst()){
+            val obj = Object()
+            obj.id = cursor.getInt(cursor.getColumnIndex(OBJECT_ID))
+            obj.name = cursor.getString(cursor.getColumnIndex(OBJECT_NAME))
+            obj.latitude = cursor.getString(cursor.getColumnIndex(OBJECT_LATITUDE)).toDouble()
+            obj.longitude = cursor.getString(cursor.getColumnIndex(OBJECT_LONGITUDE)).toDouble()
+            obj.url = cursor.getString(cursor.getColumnIndex(OBJECT_URL))
+            obj.avgtime = cursor.getDouble(cursor.getColumnIndex(OBJECT_AVGTIME))
+            obj.category = cursor.getString(cursor.getColumnIndex(OBJECT_CATEGORY))
+            obj
+        } else null
     }
+
+
 //    fun getObject(id: Int): Object? {
 //        val selectQuery = "SELECT * FROM $OBJECT_TABLE_NAME WHERE $OBJECT_ID = $id"
 //        val db = this.writableDatabase

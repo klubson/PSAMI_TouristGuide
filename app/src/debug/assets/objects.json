@@ -2,8 +2,8 @@
 	{
 		"id": 1,
 		"name": "Muzeum Narodowe w Poznaniu",
-		"longitude": 52.40818903881323, 
-		"latitude": 16.929552183848145, 
+		"latitude": 52.40818903881323, 
+		"longitude": 16.929552183848145, 
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Narodowe_w_Poznaniu"
@@ -11,8 +11,8 @@
 	{
 		"id": 2,
 		"name": "Muzeum Historii Ubioru",
-		"longitude": 52.402309059479606, 
-		"latitude": 16.92979531520047,
+		"latitude": 52.402309059479606, 
+		"longitude": 16.92979531520047,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Historii_Ubioru_w_Poznaniu"
@@ -20,8 +20,8 @@
 	{
 		"id": 3,
 		"name": "Muzeum Sztuk Użytkowych. Oddział Muzeum Narodowego w Poznaniu",
-		"longitude": 52.40917943207239, 
-		"latitude": 16.931130159395433,
+		"latitude": 52.40917943207239, 
+		"longitude": 16.931130159395433,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Sztuk_U%C5%BCytkowych_w_Poznaniu"
@@ -29,8 +29,8 @@
 	{
 		"id": 4,
 		"name": "Muzeum Unitry w Poznaniu",
-		"longitude": 52.42557381390053, 
-		"latitude": 16.94608702114769,
+		"latitude": 52.42557381390053, 
+		"longitude": 16.94608702114769,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Unitry_w_Poznaniu"
@@ -38,8 +38,8 @@
 	{
 		"id": 5,
 		"name": "Fosa/Rawelin Cytadela Poznań",
-		"longitude": 52.42429149411865, 
-		"latitude": 16.940636955786438,
+		"latitude": 52.42429149411865, 
+		"longitude": 16.940636955786438,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Park_Cytadela"
@@ -47,8 +47,8 @@
 	{
 		"id": 6,
 		"name": "Muzeum Uzbrojenia - Oddział Wielkopolskiego Muzeum Niepodległości",
-		"longitude": 52.42002540829842, 
-		"latitude": 16.932868542849988,
+		"latitude": 52.42002540829842, 
+		"longitude": 16.932868542849988,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Uzbrojenia_w_Poznaniu"
@@ -56,8 +56,8 @@
 	{
 		"id": 7,
 		"name": "Muzeum Armii Poznań",
-		"longitude": 52.41731143863275, 
-		"latitude": 16.933013386586445,
+		"latitude": 52.41731143863275, 
+		"longitude": 16.933013386586445,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Armii_Pozna%C5%84"
@@ -65,8 +65,8 @@
 	{
 		"id": 8,
 		"name": "Brama Poznania",
-		"longitude": 52.41232482552248, 
-		"latitude": 16.951586233330673,
+		"latitude": 52.41232482552248, 
+		"longitude": 16.951586233330673,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Brama_Poznania_ICHOT"
@@ -74,8 +74,8 @@
 	{
 		"id": 9,
 		"name": "Rezerwat Archeologiczny Genius Loci",
-		"longitude": 52.412698326785645, 
-		"latitude": 16.948201135121582,
+		"latitude": 52.412698326785645, 
+		"longitude": 16.948201135121582,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Rezerwat_Archeologiczny_Genius_Loci"
@@ -83,8 +83,8 @@
 	{
 		"id": 10,
 		"name": "Muzeum Archidiecezjalne w Poznaniu",
-		"longitude": 52.412517851754345, 
-		"latitude": 16.946911428709978,
+		"latitude": 52.412517851754345, 
+		"longitude": 16.946911428709978,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Archidiecezjalne_w_Poznaniu"
@@ -92,8 +92,8 @@
 	{
 		"id": 11,
 		"name": "Pracownia - Muzeum Józefa Ignacego Kraszewskiego w Poznaniu",
-		"longitude": 52.410403220173905, 
-		"latitude": 16.93431340368046,
+		"latitude": 52.410403220173905, 
+		"longitude": 16.93431340368046,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Pracownia-Muzeum_J%C3%B3zefa_Ignacego_Kraszewskiego_w_Poznaniu"
@@ -101,8 +101,8 @@
 	{
 		"id": 12,
 		"name": "Rogalowe Muzeum",
-		"longitude": 52.408438894380126, 
-		"latitude": 16.935029605052605,
+		"latitude": 52.408438894380126, 
+		"longitude": 16.935029605052605,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Rogalowe_Muzeum_Poznania"
@@ -110,8 +110,8 @@
 	{
 		"id": 13,
 		"name": "Muzeum Historii Miasta Poznania",
-		"longitude": 52.40857776194727, 
-		"latitude": 16.93402819843971,
+		"latitude": 52.40857776194727, 
+		"longitude": 16.93402819843971,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Historii_Miasta_Poznania"
@@ -119,8 +119,8 @@
 	{
 		"id": 14,
 		"name": "Muzeum Literackie Henryka Sienkiewicza w Poznaniu",
-		"longitude": 52.408892487871654, 
-		"latitude": 16.932723332888585,
+		"latitude": 52.408892487871654, 
+		"longitude": 16.932723332888585,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Literackie_Henryka_Sienkiewicza_w_Poznaniu"
@@ -128,8 +128,8 @@
 	{
 		"id": 15,
 		"name": "Muzeum Instrumentów Muzycznych. Oddział Muzeum Narodowego w Poznaniu",
-		"longitude": 52.40800852493676, 
-		"latitude": 16.934695774286354,
+		"latitude": 52.40800852493676, 
+		"longitude": 16.934695774286354,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Instrument%C3%B3w_Muzycznych_w_Poznaniu"
@@ -137,8 +137,8 @@
 	{
 		"id": 16,
 		"name": "Muzeum Powstania Wielkopolskiego 1918-1919",
-		"longitude": 52.40827239843218, 
-		"latitude": 16.933153985762996,
+		"latitude": 52.40827239843218, 
+		"longitude": 16.933153985762996,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Powstania_Wielkopolskiego_1918%E2%80%931919"
@@ -146,8 +146,8 @@
 	{
 		"id": 17,
 		"name": "Wielkopolskie Muzeum Wojskowe. Oddział Muzeum Narodowego w Poznaniu",
-		"longitude": 52.40819943019949, 
-		"latitude": 16.933187477345843,
+		"latitude": 52.40819943019949, 
+		"longitude": 16.933187477345843,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Wielkopolskie_Muzeum_Wojskowe"
@@ -155,8 +155,8 @@
 	{
 		"id": 18,
 		"name": "Muzeum Archeologiczne w Poznaniu",
-		"longitude": 52.407384551545874, 
-		"latitude": 16.934720323014805,
+		"latitude": 52.407384551545874, 
+		"longitude": 16.934720323014805,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Archeologiczne_w_Poznaniu"
@@ -164,8 +164,8 @@
 	{
 		"id": 19,
 		"name": "Wielkopolskie Muzeum Niepodległości",
-		"longitude": 52.40792688613382, 
-		"latitude": 16.937719849983853,
+		"latitude": 52.40792688613382, 
+		"longitude": 16.937719849983853,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Wielkopolskie_Muzeum_Niepodleg%C5%82o%C5%9Bci"
@@ -173,8 +173,8 @@
 	{
 		"id": 20,
 		"name": "Muzeum Bambrów Poznańskich",
-		"longitude": 52.4049326525031, 
-		"latitude": 16.94006485026796,
+		"latitude": 52.4049326525031, 
+		"longitude": 16.94006485026796,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Bambr%C3%B3w_Pozna%C5%84skich"
@@ -182,8 +182,8 @@
 	{
 		"id": 21,
 		"name": "Muzeum Etnograficzne. Oddział Muzeum Narodowego w Poznaniu",
-		"longitude": 52.40505379084054, 
-		"latitude": 16.93948749947016,
+		"latitude": 52.40505379084054, 
+		"longitude": 16.93948749947016,
 		"avgtime": 2,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Etnograficzne_w_Poznaniu"
@@ -191,8 +191,8 @@
 	{
 		"id": 22,
 		"name": "Pomnik Braterstwo broni",
-		"longitude": 52.4195580716353, 
-		"latitude": 16.93487522470415,
+		"latitude": 52.4195580716353, 
+		"longitude": 16.93487522470415,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomniki_i_rze%C5%BAby_na_Cytadeli_w_Poznaniu"
@@ -200,8 +200,8 @@
 	{
 		"id": 23,
 		"name": "Poległym i pomordowanym w walce o niepodległość ojczyzny",
-		"longitude": 52.42325932943657, 
-		"latitude": 16.928801038313825,
+		"latitude": 52.42325932943657, 
+		"longitude": 16.928801038313825,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomniki_i_rze%C5%BAby_na_Cytadeli_w_Poznaniu"
@@ -209,8 +209,8 @@
 	{
 		"id": 24,
 		"name": "Pomnik Harcerski",
-		"longitude": 52.4232840876245, 
-		"latitude": 16.928726608810138,
+		"latitude": 52.4232840876245, 
+		"longitude": 16.928726608810138,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Harcerski_przy_ul._Za_Cytadel%C4%85_w_Poznaniu"
@@ -218,8 +218,8 @@
 	{
 		"id": 25,
 		"name": "Żołnierzom Drugiej Armii Wojska Polskiego",
-		"longitude": 52.42196053593873, 
-		"latitude": 16.930056970140377,
+		"latitude": 52.42196053593873, 
+		"longitude": 16.930056970140377,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomniki_i_rze%C5%BAby_na_Cytadeli_w_Poznaniu"
@@ -227,8 +227,8 @@
 	{
 		"id": 26,
 		"name": "Pomnik jeńców francuskich w Poznaniu",
-		"longitude": 52.418871912034334, 
-		"latitude": 16.931689845643646,
+		"latitude": 52.418871912034334, 
+		"longitude": 16.931689845643646,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_je%C5%84c%C3%B3w_francuskich_w_Poznaniu"
@@ -236,8 +236,8 @@
 	{
 		"id": 27,
 		"name": "Pomnik Armii Poznań",
-		"longitude": 52.4151078582533, 
-		"latitude": 16.93058536930749,
+		"latitude": 52.4151078582533, 
+		"longitude": 16.93058536930749,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Armii_Pozna%C5%84"
@@ -245,8 +245,8 @@
 	{
 		"id": 28,
 		"name": "Pomnik Polskiego Państwa Podziemnego w Poznaniu",
-		"longitude": 52.411641914334524, 
-		"latitude": 16.91887799420304,
+		"latitude": 52.411641914334524, 
+		"longitude": 16.91887799420304,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Polskiego_Pa%C5%84stwa_Podziemnego_w_Poznaniu"
@@ -254,8 +254,8 @@
 	{
 		"id": 29,
 		"name": "Pomnik Katyński",
-		"longitude": 52.40897619428336, 
-		"latitude": 16.918680900028484,
+		"latitude": 52.40897619428336, 
+		"longitude": 16.918680900028484,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Ofiar_Katynia_i_Sybiru_w_Poznaniu"
@@ -263,8 +263,8 @@
 	{
 		"id": 30,
 		"name": "Pomnik Ofiar Czerwca 1956",
-		"longitude": 52.40827270546828, 
-		"latitude": 16.917330553187764,
+		"latitude": 52.40827270546828, 
+		"longitude": 16.917330553187764,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Ofiar_Czerwca_1956"
@@ -272,8 +272,8 @@
 	{
 		"id": 31,
 		"name": "Pomnik kryptologów w Poznaniu",
-		"longitude": 52.4074860005451, 
-		"latitude": 16.91919686020109,
+		"latitude": 52.4074860005451, 
+		"longitude": 16.91919686020109,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_kryptolog%C3%B3w_w_Poznaniu"
@@ -281,8 +281,8 @@
 	{
 		"id": 32,
 		"name": "Pomnik Ignacego Jana Paderewskiego",
-		"longitude": 52.407023118560524, 
-		"latitude": 16.91642031426407,
+		"latitude": 52.407023118560524, 
+		"longitude": 16.91642031426407,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Ignacego_Jana_Paderewskiego_w_Poznaniu"
@@ -290,8 +290,8 @@
 	{
 		"id": 33,
 		"name": "Pomnik Juliusza Słowackiego",
-		"longitude": 52.40434800233747, 
-		"latitude": 16.91739139946912,
+		"latitude": 52.40434800233747, 
+		"longitude": 16.91739139946912,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Juliusza_S%C5%82owackiego_w_Poznaniu"
@@ -299,8 +299,8 @@
 	{
 		"id": 34,
 		"name": "Pomnik Starego Marycha w Poznaniu",
-		"longitude": 52.405156553389325,  
-		"latitude": 16.93120566702962,
+		"latitude": 52.405156553389325,  
+		"longitude": 16.93120566702962,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Starego_Marycha_w_Poznaniu"
@@ -308,8 +308,8 @@
 	{
 		"id": 35,
 		"name": "Pomnik Koziołków",
-		"longitude": 52.40653093809246, 
-		"latitude": 16.935089643674292,
+		"latitude": 52.40653093809246, 
+		"longitude": 16.935089643674292,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_kozio%C5%82k%C3%B3w_w_Poznaniu"
@@ -317,8 +317,8 @@
 	{
 		"id": 36,
 		"name": "Studzienka Bamberki w Poznaniu",
-		"longitude": 52.40846841465278, 
-		"latitude": 16.93360892851953,
+		"latitude": 52.40846841465278, 
+		"longitude": 16.93360892851953,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Studzienka_Bamberki_w_Poznaniu"
@@ -326,8 +326,8 @@
 	{
 		"id": 37,
 		"name": "Pomnik Romana Wilhelmiego",
-		"longitude": 52.40969887138514, 
-		"latitude": 16.932385746140344,
+		"latitude": 52.40969887138514, 
+		"longitude": 16.932385746140344,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Romana_Wilhelmiego_w_Poznaniu"
@@ -335,8 +335,8 @@
 	{
 		"id": 38,
 		"name": "Pomnik 15. Pułku Ułanów Poznańskich",
-		"longitude": 52.408114920437065, 
-		"latitude": 16.930647722410963,
+		"latitude": 52.408114920437065, 
+		"longitude": 16.930647722410963,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_15._Pu%C5%82ku_U%C5%82an%C3%B3w_Pozna%C5%84skich"
@@ -344,8 +344,8 @@
 	{
 		"id": 39,
 		"name": "Pomnik Karola Marcinkowskiego",
-		"longitude": 52.41036637708506, 
-		"latitude": 16.929317041534542,
+		"latitude": 52.41036637708506, 
+		"longitude": 16.929317041534542,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Karola_Marcinkowskiego_w_Poznaniu"
@@ -353,8 +353,8 @@
 	{
 		"id": 40,
 		"name": "Pomnik Chopina",
-		"longitude": 52.405096810013454, 
-		"latitude": 16.935206491542672,
+		"latitude": 52.405096810013454, 
+		"longitude": 16.935206491542672,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Fryderyk_Chopin"
@@ -362,8 +362,8 @@
 	{
 		"id": 41,
 		"name": "Ławeczka Ignacego Łukasiewicza",
-		"longitude": 52.40300169844779, 
-		"latitude": 16.94275970627416,
+		"latitude": 52.40300169844779, 
+		"longitude": 16.94275970627416,
 		"avgtime": 2,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/%C5%81aweczka_Ignacego_%C5%81ukasiewicza_w_Poznaniu"
@@ -371,8 +371,8 @@
 	{
 		"id": 51,
 		"name": "Kościół pw. Najświętszego Serca Jezusa i św. Floriana",
-		"longitude": 52.41343598325535, 
-		"latitude": 16.903201754694447,
+		"latitude": 52.41343598325535, 
+		"longitude": 16.903201754694447,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -380,8 +380,8 @@
 	{
 		"id": 52,
 		"name": "Kościół Rzymskokatolicki Garnizonowy pw. Podwyższenia Krzyża Świętego",
-		"longitude": 52.41057149777242, 
-		"latitude": 16.90177401029263,
+		"latitude": 52.41057149777242, 
+		"longitude": 16.90177401029263,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -389,8 +389,8 @@
 	{
 		"id": 53,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -398,8 +398,8 @@
 	{
 		"id": 54,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -407,8 +407,8 @@
 	{
 		"id": 55,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -416,8 +416,8 @@
 	{
 		"id": 56,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -425,8 +425,8 @@
 	{
 		"id": 57,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -434,8 +434,8 @@
 	{
 		"id": 58,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -443,8 +443,8 @@
 	{
 		"id": 59,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -452,8 +452,8 @@
 	{
 		"id": 60,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -461,8 +461,8 @@
 	{
 		"id": 61,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -470,8 +470,8 @@
 	{
 		"id": 62,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -479,8 +479,8 @@
 	{
 		"id": 63,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -488,8 +488,8 @@
 	{
 		"id": 64,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -497,8 +497,8 @@
 	{
 		"id": 65,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -506,8 +506,8 @@
 	{
 		"id": 66,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -515,8 +515,8 @@
 	{
 		"id": 67,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -524,8 +524,8 @@
 	{
 		"id": 68,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -533,8 +533,8 @@
 	{
 		"id": 69,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -542,16 +542,16 @@
 	{
 		"id": 70,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
 	},{
 		"id": 71,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -559,8 +559,8 @@
 	{
 		"id": 72,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -568,8 +568,8 @@
 	{
 		"id": 73,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -577,8 +577,8 @@
 	{
 		"id": 74,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""
@@ -586,8 +586,8 @@
 	{
 		"id": 75,
 		"name": "",
-		"longitude": 52.384458773963324, 
-		"latitude": 16.95566684420284,
+		"latitude": 52.384458773963324, 
+		"longitude": 16.95566684420284,
 		"avgtime": 2,
 		"category": "church",
 		"url": ""

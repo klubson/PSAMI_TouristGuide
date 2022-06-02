@@ -5,4 +5,5 @@
     <string name="creatingDatabase">Tworzenie bazy danych…</string>
     <string name="findButton">Znajdź</string>
     <string name="hint">szukaj</string>
+    <string name="szukaj">Szukaj...</string>
 </resources>
