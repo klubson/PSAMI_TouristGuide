@@ -5,5 +5,8 @@
     <string name="creatingDatabase">Tworzenie bazy danych…</string>
     <string name="findButton">Znajdź</string>
     <string name="hint">szukaj</string>
-    <string name="szukaj">Szukaj...</string>
+    <string name="szukaj">Szukaj…</string>
+    <string name="googleLabel">Google</string>
+    <string name="wikipediaLabel">Wikipedia</string>
+    <string name="navigationLabel">Trasa</string>
 </resources>

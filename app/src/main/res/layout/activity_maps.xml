@@ -15,24 +15,133 @@
 
     <AutoCompleteTextView
         android:id="@+id/autoCompleteTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/szukaj"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="46dp"
+        android:background="@color/white"
         android:visibility="invisible"
         tools:ignore="LabelFor" />
 
     <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/showSearchBarButton"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentLeft="true"
+        android:visibility="visible"
         app:srcCompat="@drawable/places_ic_search" />
 
-    <WebView
-        android:id="@+id/webView"
+    <ImageButton
+        android:id="@+id/clearSearchBarButton"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:visibility="invisible"
+        app:srcCompat="@android:drawable/ic_menu_delete" />
+
+    <ImageButton
+        android:id="@+id/closeSearchBarButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="end"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/places_ic_clear" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/objectCardView"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="200dp"
         android:layout_alignParentBottom="true"
-        android:visibility="invisible" />
+        android:visibility="invisible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/objectNameCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="30dp"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/googleCardViewButton"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:visibility="visible"
+                        app:srcCompat="@drawable/googleg_standard_color_18" />
+
+                    <TextView
+                        android:id="@+id/googleLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/googleLabel"
+                        android:textAlignment="center"
+                        android:visibility="visible" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="30dp"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/wikiCardViewButton"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:visibility="visible"
+                        app:srcCompat="@drawable/wiki_logo" />
+
+                    <TextView
+                        android:id="@+id/wikipediaLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/wikipediaLabel"
+                        android:textAlignment="center"
+                        android:visibility="visible" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="30dp"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/navigationCardViewButton"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        app:srcCompat="@android:drawable/ic_menu_directions" />
+
+                    <TextView
+                        android:id="@+id/navigationLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/navigationLabel"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
 
 </RelativeLayout>
