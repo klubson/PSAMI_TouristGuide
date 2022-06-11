@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "category": "all",
+    "polish": "wszystkie"
+  },
+  {
+    "id": 2,
+    "category": "museum",
+    "polish": "muzeum"
+  },
+  {
+    "id": 3,
+    "category": "monument",
+    "polish": "pomnik"
+  },
+  {
+    "id": 4,
+    "category": "church",
+    "polish": "kościół"
+  }
+]

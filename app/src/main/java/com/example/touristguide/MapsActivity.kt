@@ -8,16 +8,14 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
 import android.view.View
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.przewodnikpotoruniu.DBHelper
-import com.example.przewodnikpotoruniu.Object
 import com.example.touristguide.BuildConfig.GOOGLE_MAPS_API_KEY
 import com.example.touristguide.databinding.ActivityMapsBinding
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -28,7 +26,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
@@ -43,9 +40,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
     private lateinit var autoCompleteTextView: AutoCompleteTextView
     private lateinit var databaseHandler: DBHelper
     private lateinit var showSearchBarButton: ImageButton
+    private lateinit var searchCardView: CardView
     private lateinit var clearSearchBarButton: ImageButton
     private lateinit var closeSearchBarButton: ImageButton
-    private lateinit var cardView: CardView
+    private lateinit var categorySpinner: Spinner
+    private lateinit var navigationCardView: CardView
     private lateinit var objectNameOnCardView: TextView
     private lateinit var googleSearchCardViewButton: ImageButton
     private lateinit var wikipediaSiteCardViewButton: ImageButton
@@ -53,9 +52,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
     private var lastKnownLocation: Location? = null
     private val defaultLocation = LatLng( 52.40995297951002, 16.92583832833938)
     var dataNamesOnly: ArrayList<String>? = null
-    var objectsAdapter : ArrayAdapter<String>? = null
-    var chosenObjectName : String? = null
-    var chosenObject : Object? = null
+    var categoriesPolishNames : ArrayList<String>? = null
+    var chosenSpotName : String? = null
+    var chosenSpot : Spot? = null
+    var chosenCategoryName : String? = null
+    var chosenCategory : Category? = null
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,55 +74,83 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     fun initializeComponents(){
         databaseHandler = DBHelper(this)
-        dataNamesOnly = databaseHandler.objectNames
-        objectsAdapter = ArrayAdapter(
-            this, android.R.layout.simple_dropdown_item_1line, dataNamesOnly!!
-        )
         autoCompleteTextView = findViewById(R.id.autoCompleteTextView)
-        autoCompleteTextView.setAdapter(objectsAdapter)
         autoCompleteTextView.setOnItemClickListener { _, _, _, id ->
-            chosenObjectName = dataNamesOnly?.get(id.toInt())
-            chosenObject = chosenObjectName?.let { databaseHandler.getObjectByItsName(it) }
-            if (chosenObject != null) {
+            chosenSpotName = dataNamesOnly?.get(id.toInt())
+            chosenSpot = chosenSpotName?.let { databaseHandler.getSpotByName(it) }
+            if (chosenSpot != null) {
                 val newLocation = Location("")
-                newLocation.latitude = chosenObject!!.latitude!!
-                newLocation.longitude = chosenObject!!.longitude!!
+                newLocation.latitude = chosenSpot!!.latitude!!
+                newLocation.longitude = chosenSpot!!.longitude!!
                 onLocationChanged(newLocation)
-                cardView.visibility = View.VISIBLE
-                objectNameOnCardView.text = chosenObjectName
+                navigationCardView.visibility = View.VISIBLE
+                objectNameOnCardView.text = chosenSpotName
             }
         }
         showSearchBarButton = findViewById(R.id.showSearchBarButton)
         showSearchBarButton.setOnClickListener {
-            changeObjectsVisbility(View.INVISIBLE, View.VISIBLE, View.VISIBLE, View.VISIBLE)
+            changeObjectsVisbility(View.INVISIBLE, View.VISIBLE)
         }
+
+        searchCardView = findViewById(R.id.searchCardView)
+        categorySpinner = findViewById(R.id.spinner)
+        categoriesPolishNames = databaseHandler.categoriesPolishNames
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesPolishNames!!)
+        categorySpinner.adapter = adapter
+        categorySpinner.onItemSelectedListener = object:
+            AdapterView.OnItemSelectedListener {
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                chosenCategoryName = categoriesPolishNames!![id.toInt()]
+                chosenCategory = chosenCategoryName?.let { databaseHandler.getCategoryByPolishName(it) }
+                if (chosenCategory != null){
+                    dataNamesOnly = chosenCategory!!.category?.let { databaseHandler.getSpotNamesByCategory(it) }
+                    autoCompleteTextView.setAdapter(ArrayAdapter(
+                        baseContext, android.R.layout.simple_dropdown_item_1line, dataNamesOnly!!
+                    ))
+                }
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
+
         clearSearchBarButton = findViewById(R.id.clearSearchBarButton)
         clearSearchBarButton.setOnClickListener {
             autoCompleteTextView.text.clear()
+            categorySpinner.setSelection(0)
         }
         closeSearchBarButton = findViewById(R.id.closeSearchBarButton)
         closeSearchBarButton.setOnClickListener {
-            changeObjectsVisbility(View.VISIBLE, View.INVISIBLE, View.INVISIBLE, View.INVISIBLE)
+            changeObjectsVisbility(View.VISIBLE, View.INVISIBLE)
+            navigationCardView.visibility = View.INVISIBLE
+            categorySpinner.setSelection(0)
         }
 
-        cardView = findViewById(R.id.objectCardView)
+        navigationCardView = findViewById(R.id.objectCardView)
         objectNameOnCardView = findViewById(R.id.objectNameCardView)
         googleSearchCardViewButton = findViewById(R.id.googleCardViewButton)
         googleSearchCardViewButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_WEB_SEARCH)
-            intent.putExtra(SearchManager.QUERY, chosenObjectName)
+            intent.putExtra(SearchManager.QUERY, chosenSpotName)
             startActivity(intent)
         }
         wikipediaSiteCardViewButton = findViewById(R.id.wikiCardViewButton)
         wikipediaSiteCardViewButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(chosenObject?.url))
-            startActivity(intent)
+            if (chosenSpot?.url != ""){
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(chosenSpot?.url))
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Brak podstrony Wikipedii!", Toast.LENGTH_LONG).show()
+            }
+
         }
 
     }
@@ -135,16 +164,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+
     private fun changeObjectsVisbility(
         showButtonVisibility: Int,
-        clearButtonVisibility: Int,
-        closeButtonVisibility: Int,
-        autoTextViewVisibility: Int){
+        searchCardViewVisibility: Int){
         showSearchBarButton.visibility = showButtonVisibility
-        clearSearchBarButton.visibility = clearButtonVisibility
-        closeSearchBarButton.visibility = closeButtonVisibility
-        autoCompleteTextView.visibility = autoTextViewVisibility
-
+        searchCardView.visibility = searchCardViewVisibility
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

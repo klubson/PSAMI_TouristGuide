@@ -9,4 +9,5 @@
     <string name="googleLabel">Google</string>
     <string name="wikipediaLabel">Wikipedia</string>
     <string name="navigationLabel">Trasa</string>
+    <string name="categoryPicker">Kategoria:</string>
 </resources>

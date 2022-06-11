@@ -17,7 +17,8 @@ class LoadingActivity : AppCompatActivity() {
         run {
             //pobieranie bazy danych
             db = DBHelper(this)
-            db.getJSONFile(this)
+            db.getSpotsFromJSONFile(this)
+            db.getCategoriesFromJSONFile(this)
         }
         runOnUiThread(){
             // uruchomienie mapy po zakończeniu pobierania danych
