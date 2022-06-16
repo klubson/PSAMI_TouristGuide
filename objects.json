@@ -4,7 +4,8 @@
 		"name": "Muzeum Narodowe w Poznaniu",
 		"longitude": 52.40818903881323, 
 		"latitude": 16.929552183848145, 
-		"time": 2,
+		"time": 90,
+		"rate": 4.6,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Narodowe_w_Poznaniu"
 	},
@@ -13,7 +14,8 @@
 		"name": "Muzeum Historii Ubioru",
 		"longitude": 52.402309059479606, 
 		"latitude": 16.92979531520047,
-		"time": 2,
+		"time": 45,
+		"rate": 4.5,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Historii_Ubioru_w_Poznaniu"
 	},
@@ -22,7 +24,8 @@
 		"name": "Muzeum Sztuk Użytkowych. Oddział Muzeum Narodowego w Poznaniu",
 		"longitude": 52.40917943207239, 
 		"latitude": 16.931130159395433,
-		"time": 2,
+		"time": 60,
+		"rate": 4.5,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Sztuk_U%C5%BCytkowych_w_Poznaniu"
 	},
@@ -31,7 +34,8 @@
 		"name": "Muzeum Unitry w Poznaniu",
 		"longitude": 52.42557381390053, 
 		"latitude": 16.94608702114769,
-		"time": 2,
+		"time": 55,
+		"rate": 4.3,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Unitry_w_Poznaniu"
 	},
@@ -40,7 +44,8 @@
 		"name": "Fosa/Rawelin Cytadela Poznań",
 		"longitude": 52.42429149411865, 
 		"latitude": 16.940636955786438,
-		"time": 2,
+		"time": 110,
+		"rate": 4.4,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Park_Cytadela"
 	},
@@ -49,7 +54,8 @@
 		"name": "Muzeum Uzbrojenia - Oddział Wielkopolskiego Muzeum Niepodległości",
 		"longitude": 52.42002540829842, 
 		"latitude": 16.932868542849988,
-		"time": 2,
+		"time": 80,
+		"rate": 4.6,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Uzbrojenia_w_Poznaniu"
 	},
@@ -58,7 +64,8 @@
 		"name": "Muzeum Armii Poznań",
 		"longitude": 52.41731143863275, 
 		"latitude": 16.933013386586445,
-		"time": 2,
+		"time": 85,
+		"rate": 4.6,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Armii_Pozna%C5%84"
 	},
@@ -67,7 +74,8 @@
 		"name": "Brama Poznania",
 		"longitude": 52.41232482552248, 
 		"latitude": 16.951586233330673,
-		"time": 2,
+		"time": 145,
+		"rate": 4.7,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Brama_Poznania_ICHOT"
 	},
@@ -76,7 +84,8 @@
 		"name": "Rezerwat Archeologiczny Genius Loci",
 		"longitude": 52.412698326785645, 
 		"latitude": 16.948201135121582,
-		"time": 2,
+		"time": 90,
+		"rate": 4.6,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Rezerwat_Archeologiczny_Genius_Loci"
 	},
@@ -85,7 +94,8 @@
 		"name": "Muzeum Archidiecezjalne w Poznaniu",
 		"longitude": 52.412517851754345, 
 		"latitude": 16.946911428709978,
-		"time": 2,
+		"time": 55,
+		"rate": 4.7,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Archidiecezjalne_w_Poznaniu"
 	},
@@ -94,7 +104,8 @@
 		"name": "Pracownia - Muzeum Józefa Ignacego Kraszewskiego w Poznaniu",
 		"longitude": 52.410403220173905, 
 		"latitude": 16.93431340368046,
-		"time": 2,
+		"time": 35,
+		"rate": 4.7,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Pracownia-Muzeum_J%C3%B3zefa_Ignacego_Kraszewskiego_w_Poznaniu"
 	},
@@ -103,7 +114,8 @@
 		"name": "Rogalowe Muzeum",
 		"longitude": 52.408438894380126, 
 		"latitude": 16.935029605052605,
-		"time": 2,
+		"time": 40,
+		"rate": 4.8,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Rogalowe_Muzeum_Poznania"
 	},
@@ -112,7 +124,8 @@
 		"name": "Muzeum Historii Miasta Poznania",
 		"longitude": 52.40857776194727, 
 		"latitude": 16.93402819843971,
-		"time": 2,
+		"time": 160,
+		"rate": 4.6,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Historii_Miasta_Poznania"
 	},
@@ -121,7 +134,8 @@
 		"name": "Muzeum Literackie Henryka Sienkiewicza w Poznaniu",
 		"longitude": 52.408892487871654, 
 		"latitude": 16.932723332888585,
-		"time": 2,
+		"time": 45,
+		"rate": 4.5,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Literackie_Henryka_Sienkiewicza_w_Poznaniu"
 	},
@@ -130,7 +144,8 @@
 		"name": "Muzeum Instrumentów Muzycznych. Oddział Muzeum Narodowego w Poznaniu",
 		"longitude": 52.40800852493676, 
 		"latitude": 16.934695774286354,
-		"time": 2,
+		"time": 65,
+		"rate": 4.4,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Instrument%C3%B3w_Muzycznych_w_Poznaniu"
 	},
@@ -139,7 +154,8 @@
 		"name": "Muzeum Powstania Wielkopolskiego 1918-1919",
 		"longitude": 52.40827239843218, 
 		"latitude": 16.933153985762996,
-		"time": 2,
+		"time": 75,
+		"rate": 4.7,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Powstania_Wielkopolskiego_1918%E2%80%931919"
 	},
@@ -148,7 +164,8 @@
 		"name": "Wielkopolskie Muzeum Wojskowe. Oddział Muzeum Narodowego w Poznaniu",
 		"longitude": 52.40819943019949, 
 		"latitude": 16.933187477345843,
-		"time": 2,
+		"time": 60,
+		"rate": 4.3,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Wielkopolskie_Muzeum_Wojskowe"
 	},
@@ -157,7 +174,8 @@
 		"name": "Muzeum Archeologiczne w Poznaniu",
 		"longitude": 52.407384551545874, 
 		"latitude": 16.934720323014805,
-		"time": 2,
+		"time": 60,
+		"rate": 4.6,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Archeologiczne_w_Poznaniu"
 	},
@@ -166,7 +184,8 @@
 		"name": "Wielkopolskie Muzeum Niepodległości",
 		"longitude": 52.40792688613382, 
 		"latitude": 16.937719849983853,
-		"time": 2,
+		"time": 135,
+		"rate": 4.4,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Wielkopolskie_Muzeum_Niepodleg%C5%82o%C5%9Bci"
 	},
@@ -175,7 +194,8 @@
 		"name": "Muzeum Bambrów Poznańskich",
 		"longitude": 52.4049326525031, 
 		"latitude": 16.94006485026796,
-		"time": 2,
+		"time": 25,
+		"rate": 4.6,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Bambr%C3%B3w_Pozna%C5%84skich"
 	},
@@ -184,7 +204,8 @@
 		"name": "Muzeum Etnograficzne. Oddział Muzeum Narodowego w Poznaniu",
 		"longitude": 52.40505379084054, 
 		"latitude": 16.93948749947016,
-		"time": 2,
+		"time": 30,
+		"rate": 4.3,
 		"category": "museum",
 		"url": "https://pl.wikipedia.org/wiki/Muzeum_Etnograficzne_w_Poznaniu"
 	},
@@ -193,7 +214,8 @@
 		"name": "Pomnik Braterstwo broni",
 		"longitude": 52.4195580716353, 
 		"latitude": 16.93487522470415,
-		"time": 2,
+		"time": 5,
+		"rate": 5.0,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomniki_i_rze%C5%BAby_na_Cytadeli_w_Poznaniu"
 	},
@@ -202,7 +224,8 @@
 		"name": "Poległym i pomordowanym w walce o niepodległość ojczyzny",
 		"longitude": 52.42325932943657, 
 		"latitude": 16.928801038313825,
-		"time": 2,
+		"time": 7,
+		"rate": 5.0,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomniki_i_rze%C5%BAby_na_Cytadeli_w_Poznaniu"
 	},
@@ -212,6 +235,7 @@
 		"longitude": 52.4232840876245, 
 		"latitude": 16.928726608810138,
 		"time": 2,
+		"rate": 5.0,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Harcerski_przy_ul._Za_Cytadel%C4%85_w_Poznaniu"
 	},
@@ -220,7 +244,8 @@
 		"name": "Żołnierzom Drugiej Armii Wojska Polskiego",
 		"longitude": 52.42196053593873, 
 		"latitude": 16.930056970140377,
-		"time": 2,
+		"time": 4,
+		"rate": 4.3,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomniki_i_rze%C5%BAby_na_Cytadeli_w_Poznaniu"
 	},
@@ -229,7 +254,8 @@
 		"name": "Pomnik jeńców francuskich w Poznaniu",
 		"longitude": 52.418871912034334, 
 		"latitude": 16.931689845643646,
-		"time": 2,
+		"time": 5,
+		"rate": 3.9,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_je%C5%84c%C3%B3w_francuskich_w_Poznaniu"
 	},
@@ -238,7 +264,8 @@
 		"name": "Pomnik Armii Poznań",
 		"longitude": 52.4151078582533, 
 		"latitude": 16.93058536930749,
-		"time": 2,
+		"time": 8,
+		"rate": 4.8,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Armii_Pozna%C5%84"
 	},
@@ -247,7 +274,8 @@
 		"name": "Pomnik Polskiego Państwa Podziemnego w Poznaniu",
 		"longitude": 52.411641914334524, 
 		"latitude": 16.91887799420304,
-		"time": 2,
+		"time": 10,
+		"rate": 4.6,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Polskiego_Pa%C5%84stwa_Podziemnego_w_Poznaniu"
 	},
@@ -256,7 +284,8 @@
 		"name": "Pomnik Katyński",
 		"longitude": 52.40897619428336, 
 		"latitude": 16.918680900028484,
-		"time": 2,
+		"time": 6,
+		"rate": 5.0,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Ofiar_Katynia_i_Sybiru_w_Poznaniu"
 	},
@@ -265,7 +294,8 @@
 		"name": "Pomnik Ofiar Czerwca 1956",
 		"longitude": 52.40827270546828, 
 		"latitude": 16.917330553187764,
-		"time": 2,
+		"time": 3,
+		"rate": 4.7,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Ofiar_Czerwca_1956"
 	},
@@ -275,6 +305,7 @@
 		"longitude": 52.4074860005451, 
 		"latitude": 16.91919686020109,
 		"time": 2,
+		"rate": 4.8,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_kryptolog%C3%B3w_w_Poznaniu"
 	},
@@ -284,6 +315,7 @@
 		"longitude": 52.407023118560524, 
 		"latitude": 16.91642031426407,
 		"time": 2,
+		"rate": 4.6,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Ignacego_Jana_Paderewskiego_w_Poznaniu"
 	},
@@ -293,6 +325,7 @@
 		"longitude": 52.40434800233747, 
 		"latitude": 16.91739139946912,
 		"time": 2,
+		"rate": 4.1,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Juliusza_S%C5%82owackiego_w_Poznaniu"
 	},
@@ -301,7 +334,8 @@
 		"name": "Pomnik Starego Marycha w Poznaniu",
 		"longitude": 52.405156553389325,  
 		"latitude": 16.93120566702962,
-		"time": 2,
+		"time": 3,
+		"rate": 4.7,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Starego_Marycha_w_Poznaniu"
 	},
@@ -310,7 +344,8 @@
 		"name": "Pomnik Koziołków",
 		"longitude": 52.40653093809246, 
 		"latitude": 16.935089643674292,
-		"time": 2,
+		"time": 7,
+		"rate": 4.7,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_kozio%C5%82k%C3%B3w_w_Poznaniu"
 	},
@@ -320,6 +355,7 @@
 		"longitude": 52.40846841465278, 
 		"latitude": 16.93360892851953,
 		"time": 2,
+		"rate": 4.6,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Studzienka_Bamberki_w_Poznaniu"
 	},
@@ -328,7 +364,8 @@
 		"name": "Pomnik Romana Wilhelmiego",
 		"longitude": 52.40969887138514, 
 		"latitude": 16.932385746140344,
-		"time": 2,
+		"time": 3,
+		"rate": 4.5,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Romana_Wilhelmiego_w_Poznaniu"
 	},
@@ -337,7 +374,8 @@
 		"name": "Pomnik 15. Pułku Ułanów Poznańskich",
 		"longitude": 52.408114920437065, 
 		"latitude": 16.930647722410963,
-		"time": 2,
+		"time": 4,
+		"rate": 4.7,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_15._Pu%C5%82ku_U%C5%82an%C3%B3w_Pozna%C5%84skich"
 	},
@@ -346,7 +384,8 @@
 		"name": "Pomnik Karola Marcinkowskiego",
 		"longitude": 52.41036637708506, 
 		"latitude": 16.929317041534542,
-		"time": 2,
+		"time": 3,
+		"rate": 4.6,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Pomnik_Karola_Marcinkowskiego_w_Poznaniu"
 	},
@@ -356,6 +395,7 @@
 		"longitude": 52.405096810013454, 
 		"latitude": 16.935206491542672,
 		"time": 2,
+		"rate": 4.6,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/Fryderyk_Chopin"
 	},
@@ -365,6 +405,98 @@
 		"longitude": 52.40300169844779, 
 		"latitude": 16.94275970627416,
 		"time": 2,
+		"rate": 4.8,
 		"category": "monument",
 		"url": "https://pl.wikipedia.org/wiki/%C5%81aweczka_Ignacego_%C5%81ukasiewicza_w_Poznaniu"
+	},
+	{
+		"id": 42,
+		"name": "Kościół Najświętszego Serca Pana Jezusa i Matki Bożej Pocieszenia",
+		"longitude": 52.40977572293096, 
+		"latitude": 16.936777989938918,
+		"time": 35,
+		"rate": 4.7,
+		"category": "church",
+		"url": "https://pl.wikipedia.org/wiki/Ko%C5%9Bci%C3%B3%C5%82_Naj%C5%9Bwi%C4%99tszego_Serca_Jezusowego_i_Matki_Boskiej_Pocieszenia_w_Poznaniu"
+	},
+	{
+		"id": 43,
+		"name": "Kościół Najświętszej Krwi Pana Jezusa",
+		"longitude": 52.40913437469288, 
+		"latitude": 16.935189941996644,
+		"time": 15,
+		"rate": 4.7,
+		"category": "church",
+		"url": "https://pl.wikipedia.org/wiki/Ko%C5%9Bci%C3%B3%C5%82_Naj%C5%9Bwi%C4%99tszej_Krwi_Pana_Jezusa_w_Poznaniu"
+	},
+	{
+		"id": 44,
+		"name": "Kościół NMP Wspomożycielki Wiernych",
+		"longitude": 52.410234001587305, 
+		"latitude": 16.933816674004696,
+		"time": 20,
+		"rate": 3.9,
+		"category": "church",
+		"url": "https://pl.wikipedia.org/wiki/Ko%C5%9Bci%C3%B3%C5%82_Naj%C5%9Bwi%C4%99tszej_Marii_Panny_Wspomo%C5%BCycielki_Wiernych_w_Poznaniu"
+	},
+	{
+		"id": 45,
+		"name": "Fara Poznańska. Bazylika kolegiacka Matki Bożej Nieustającej Pomocy, św. Marii Magdaleny i św. Stanisława Biskupa",
+		"longitude": 52.40646401377624, 
+		"latitude": 16.93407385677578,
+		"time": 45,
+		"rate": 4.8,
+		"category": "church",
+		"url": "https://pl.wikipedia.org/wiki/Bazylika_Matki_Bo%C5%BCej_Nieustaj%C4%85cej_Pomocy,_%C5%9Bw._Marii_Magdaleny_i_%C5%9Bw._Stanis%C5%82awa_Biskupa_w_Poznaniu"
+	},
+	{
+		"id": 46,
+		"name": "Kościół Karmelitanek Bosych w Poznaniu",
+		"longitude": 52.407026946854856, 
+		"latitude": 16.931434613732346,
+		"time": 25,
+		"rate": 3.8,
+		"category": "church",
+		"url": "https://pl.wikipedia.org/wiki/Ko%C5%9Bci%C3%B3%C5%82_Karmelitanek_Bosych_w_Poznaniu"
+	},
+	{
+		"id": 47,
+		"name": "Kościół rzymskokatolicki pw. św. Antoniego Padewskiego",
+		"longitude": 52.4084014160825, 
+		"latitude": 16.931456107773275,
+		"time": 45,
+		"rate": 4.7,
+		"category": "church",
+		"url": "https://pl.wikipedia.org/wiki/Ko%C5%9Bci%C3%B3%C5%82_%C5%9Bw._Antoniego_Padewskiego_i_klasztor_franciszkan%C3%B3w_konwentualnych_w_Poznaniu"
+	},
+	{
+		"id": 48,
+		"name": "Kościół Wszystkich Świętych",
+		"longitude": 52.407288389296205, 
+		"latitude": 16.939631531000273,
+		"time": 20,
+		"rate": 4.6,
+		"category": "church",
+		"url": "https://pl.wikipedia.org/wiki/Ko%C5%9Bci%C3%B3%C5%82_Wszystkich_%C5%9Awi%C4%99tych_w_Poznaniu"
+	},
+	{
+		"id": 49,
+		"name": "Kościół św. Marcina",
+		"longitude": 52.40580941653806, 
+		"latitude": 16.92815128539483,
+		"time": 15,
+		"rate": 4.5,
+		"category": "church",
+		"url": "https://pl.wikipedia.org/wiki/Ko%C5%9Bci%C3%B3%C5%82_%C5%9Bw._Marcina_w_Poznaniu"
+	},
+	{
+		"id": 50,
+		"name": "Kościół Najświętszego Zbawiciela",
+		"longitude": 52.40906882188488, 
+		"latitude": 16.920448259874544,
+		"time": 30,
+		"rate": 4.6,
+		"category": "church",
+		"url": "https://pl.wikipedia.org/wiki/Ko%C5%9Bci%C3%B3%C5%82_Naj%C5%9Bwi%C4%99tszego_Zbawiciela_w_Poznaniu"
 	}
+]
