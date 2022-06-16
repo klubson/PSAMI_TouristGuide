@@ -1,0 +1,82 @@
+[
+	{
+		"id": 1,
+		"name": "Muzeum Narodowe w Poznaniu",
+		"longitude": 52.40818903881323, 
+		"latitude": 16.929552183848145, 
+		"time": 90,
+		"rate": 4.6,
+		"category": "museum",
+		"url": "https://pl.wikipedia.org/wiki/Muzeum_Narodowe_w_Poznaniu"
+	},
+	{
+		"id": 2,
+		"name": "Muzeum Historii Ubioru",
+		"longitude": 52.402309059479606, 
+		"latitude": 16.92979531520047,
+		"time": 45,
+		"rate": 4.5,
+		"category": "museum",
+		"url": "https://pl.wikipedia.org/wiki/Muzeum_Historii_Ubioru_w_Poznaniu"
+	},
+	{
+		"id": 3,
+		"name": "Muzeum Sztuk Użytkowych. Oddział Muzeum Narodowego w Poznaniu",
+		"longitude": 52.40917943207239, 
+		"latitude": 16.931130159395433,
+		"time": 60,
+		"rate": 4.5,
+		"category": "museum",
+		"url": "https://pl.wikipedia.org/wiki/Muzeum_Sztuk_U%C5%BCytkowych_w_Poznaniu"
+	},
+	{
+		"id": 4,
+		"name": "Muzeum Unitry w Poznaniu",
+		"longitude": 52.42557381390053, 
+		"latitude": 16.94608702114769,
+		"time": 55,
+		"rate": 4.3,
+		"category": "museum",
+		"url": "https://pl.wikipedia.org/wiki/Muzeum_Unitry_w_Poznaniu"
+	},
+	{
+		"id": 5,
+		"name": "Fosa/Rawelin Cytadela Poznań",
+		"longitude": 52.42429149411865, 
+		"latitude": 16.940636955786438,
+		"time": 110,
+		"rate": 4.4,
+		"category": "museum",
+		"url": "https://pl.wikipedia.org/wiki/Park_Cytadela"
+	},
+	{
+		"id": 6,
+		"name": "Muzeum Uzbrojenia - Oddział Wielkopolskiego Muzeum Niepodległości",
+		"longitude": 52.42002540829842, 
+		"latitude": 16.932868542849988,
+		"time": 80,
+		"rate": 4.6,
+		"category": "museum",
+		"url": "https://pl.wikipedia.org/wiki/Muzeum_Uzbrojenia_w_Poznaniu"
+	},
+	{
+		"id": 7,
+		"name": "Muzeum Armii Poznań",
+		"longitude": 52.41731143863275, 
+		"latitude": 16.933013386586445,
+		"time": 85,
+		"rate": 4.6,
+		"category": "museum",
+		"url": "https://pl.wikipedia.org/wiki/Muzeum_Armii_Pozna%C5%84"
+	},
+	{
+		"id": 8,
+		"name": "Brama Poznania",
+		"longitude": 52.41232482552248, 
+		"latitude": 16.951586233330673,
+		"time": 145,
+		"rate": 4.7,
+		"category": "museum",
+		"url": "https://pl.wikipedia.org/wiki/Brama_Poznania_ICHOT"
+	}
+]
