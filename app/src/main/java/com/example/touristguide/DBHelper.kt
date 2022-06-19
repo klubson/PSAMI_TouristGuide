@@ -1,4 +1,4 @@
-package com.example.przewodnikpotoruniu;
+package com.example.touristguide;
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
@@ -6,8 +6,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.touristguide.Category
-import com.example.touristguide.Spot
 import org.json.JSONArray
 import org.json.JSONException
 import java.io.IOException
@@ -16,7 +14,7 @@ import java.io.IOException
 class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VER) {
     companion object {
         private val DATABASE_NAME = "tourist.db"
-        private val DATABASE_VER = 4
+        private val DATABASE_VER = 9
         private val SPOT_TABLE_NAME = "spots"
         private val SPOT_ID = "id"
         private val SPOT_NAME = "name"
@@ -32,7 +30,6 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME, null, 
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-        print(DATABASE_NAME)
         var CREATE_TABLE_QUERY = ("CREATE TABLE $SPOT_TABLE_NAME ($SPOT_ID INTEGER PRIMARY KEY, $SPOT_NAME TEXT, $SPOT_LATITUDE TEXT, $SPOT_LONGITUDE TEXT, $SPOT_AVGTIME TEXT, $SPOT_CATEGORY TEXT, $SPOT_URL TEXT)")
         db!!.execSQL(CREATE_TABLE_QUERY)
         CREATE_TABLE_QUERY = ("CREATE TABLE $CATEGORY_TABLE_NAME ($CATEGORY_ID INTEGER PRIMARY KEY, $CATEGORY_NAME TEXT, $CATEGORY_POLISH TEXT)")
@@ -40,8 +37,11 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME, null, 
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        db!!.execSQL("DROP TABLE IF EXISTS $SPOT_TABLE_NAME")
-        db.execSQL("DROP TABLE IF EXISTS $CATEGORY_TABLE_NAME")
+        if (newVersion > oldVersion){
+            db!!.execSQL("DROP TABLE IF EXISTS $SPOT_TABLE_NAME")
+            db.execSQL("DROP TABLE IF EXISTS $CATEGORY_TABLE_NAME")
+            onCreate(db)
+        }
     }
 
     private fun addSpot(id: Int, name: String, latitude: Double, longitude: Double, avgtime: Double, category: String, url: String){
