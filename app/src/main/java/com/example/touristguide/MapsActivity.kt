@@ -5,10 +5,11 @@ import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
+import android.os.*
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -17,6 +18,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.touristguide.BuildConfig.GOOGLE_MAPS_API_KEY
+import com.example.touristguide.NavigationClasses.MapData
 import com.example.touristguide.databinding.ActivityMapsBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationListener
@@ -27,9 +29,13 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
-
+import com.google.gson.Gson
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.util.concurrent.Executors
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
 
@@ -48,6 +54,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
     private lateinit var objectNameOnCardView: TextView
     private lateinit var googleSearchCardViewButton: ImageButton
     private lateinit var wikipediaSiteCardViewButton: ImageButton
+    private lateinit var navigationCardViewButton: ImageButton
     private var locationPermissionGranted = false
     private var lastKnownLocation: Location? = null
     private val defaultLocation = LatLng( 52.40995297951002, 16.92583832833938)
@@ -62,6 +69,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (!Places.isInitialized()) {
+            Places.initialize(applicationContext, GOOGLE_MAPS_API_KEY)
+        }
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -157,6 +168,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
 
         }
 
+        navigationCardViewButton = findViewById(R.id.navigationCardViewButton)
+        navigationCardViewButton.setOnClickListener {
+            navigationCardView.visibility = View.INVISIBLE
+            val chosenSpotLatLng = chosenSpot?.latitude?.let { it1 -> chosenSpot!!.longitude?.let { it2 ->
+                LatLng(it1,
+                    it2
+                )
+            } }
+            if (chosenSpotLatLng != null) {
+                createNavigationLine(defaultLocation, chosenSpotLatLng)
+            }
+        }
+
     }
 
     /**
@@ -204,6 +228,55 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
     }
 
+    private fun createNavigationLine(from : LatLng, to : LatLng){
+        val url = getDirectionURL(from, to, GOOGLE_MAPS_API_KEY)
+        mMap.addMarker(MarkerOptions().position(from))
+        mMap.addMarker(MarkerOptions().position(to))
+        asyncTask(url)
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 14F))
+
+    }
+
+    private fun getDirectionURL(origin:LatLng, dest:LatLng, secret: String) : String{
+        return "https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}" +
+                "&destination=${dest.latitude},${dest.longitude}" +
+                "&sensor=false" +
+                "&mode=driving" +
+                "&key=$secret"
+    }
+
+    fun decodePolyline(encoded: String): List<LatLng> {
+        val poly = ArrayList<LatLng>()
+        var index = 0
+        val len = encoded.length
+        var lat = 0
+        var lng = 0
+        while (index < len) {
+            var b: Int
+            var shift = 0
+            var result = 0
+            do {
+                b = encoded[index++].code - 63
+                result = result or (b and 0x1f shl shift)
+                shift += 5
+            } while (b >= 0x20)
+            val dlat = if (result and 1 != 0) (result shr 1).inv() else result shr 1
+            lat += dlat
+            shift = 0
+            result = 0
+            do {
+                b = encoded[index++].code - 63
+                result = result or (b and 0x1f shl shift)
+                shift += 5
+            } while (b >= 0x20)
+            val dlng = if (result and 1 != 0) (result shr 1).inv() else result shr 1
+            lng += dlng
+            val latLng = LatLng((lat.toDouble() / 1E5),(lng.toDouble() / 1E5))
+            poly.add(latLng)
+        }
+        return poly
+    }
+
     private fun getLocationPermission() {
         if (ContextCompat.checkSelfPermission(this.applicationContext,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -221,29 +294,100 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
             .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat()))
         mMap.uiSettings.isMyLocationButtonEnabled = true
 
-//        try {
-//            if (locationPermissionGranted) {
-//                val locationResult = fusedLocationProviderClient.lastLocation
-//                locationResult.addOnCompleteListener(this) { task ->
-//                    if (task.isSuccessful) {
-//                        // Set the map's camera position to the current location of the device.
-//                        lastKnownLocation = task.result
-//                        if (lastKnownLocation != null) {
-//                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-//                                LatLng(lastKnownLocation!!.latitude,
-//                                    lastKnownLocation!!.longitude), DEFAULT_ZOOM.toFloat()))
-//                        }
-//                    } else {
-//                        mMap.moveCamera(CameraUpdateFactory
-//                            .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat()))
-//                        mMap.uiSettings.isMyLocationButtonEnabled = true
-//                    }
-//                }
-//            }
-//        } catch (e: SecurityException) {
-//            Log.e("Exception: %s", e.message, e)
-//        }
+        try {
+            if (locationPermissionGranted) {
+                val locationResult = fusedLocationProviderClient.lastLocation
+                locationResult.addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Set the map's camera position to the current location of the device.
+                        lastKnownLocation = task.result
+                        if (lastKnownLocation != null) {
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                LatLng(lastKnownLocation!!.latitude,
+                                    lastKnownLocation!!.longitude), DEFAULT_ZOOM.toFloat()))
+                        }
+                    } else {
+                        mMap.moveCamera(CameraUpdateFactory
+                            .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat()))
+                        mMap.uiSettings.isMyLocationButtonEnabled = true
+                    }
+                }
+            }
+        } catch (e: SecurityException) {
+            Log.e("Exception: %s", e.message, e)
+        }
     }
+
+    private fun asyncTask(url : String){
+        val executor = Executors.newSingleThreadExecutor()
+        val handler = Handler(Looper.getMainLooper())
+        executor.execute {
+            val client = OkHttpClient()
+            val request = Request.Builder().url(url).build()
+            val response = client.newCall(request).execute()
+            val data = response.body!!.string()
+
+            val result =  ArrayList<List<LatLng>>()
+            try{
+                val respObj = Gson().fromJson(data, MapData::class.java)
+                val path =  ArrayList<LatLng>()
+                for (i in 0 until respObj.routes[0].legs[0].steps.size){
+                    path.addAll(decodePolyline(respObj.routes[0].legs[0].steps[i].polyline.points))
+                }
+                result.add(path)
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+
+            handler.post {
+                val lineoption = PolylineOptions()
+                for (i in result.indices){
+                    lineoption.addAll(result[i])
+                    lineoption.width(10f)
+                    lineoption.color(Color.GREEN)
+                    lineoption.geodesic(true)
+                }
+                mMap.addPolyline(lineoption)
+            }
+        }
+    }
+
+//    @SuppressLint("StaticFieldLeak")
+//    private inner class GetDirection(val url : String) : AsyncTask<Void, Void, List<List<LatLng>>>(){
+//        override fun doInBackground(vararg params: Void?): List<List<LatLng>> {
+//
+//            val client = OkHttpClient()
+//            val request = Request.Builder().url(url).build()
+//            val response = client.newCall(request).execute()
+//            val data = response.body!!.string()
+//
+//            val result =  ArrayList<List<LatLng>>()
+//            try{
+//                val respObj = Gson().fromJson(data, MapData::class.java)
+//                val path =  ArrayList<LatLng>()
+//                for (i in 0 until respObj.routes[0].legs[0].steps.size){
+//                    path.addAll(decodePolyline(respObj.routes[0].legs[0].steps[i].polyline.points))
+//                }
+//                result.add(path)
+//            }catch (e:Exception){
+//                e.printStackTrace()
+//            }
+//            return result
+//        }
+//
+//        override fun onPostExecute(result: List<List<LatLng>>) {
+//            val lineoption = PolylineOptions()
+//            for (i in result.indices){
+//                lineoption.addAll(result[i])
+//                lineoption.width(10f)
+//                lineoption.color(Color.GREEN)
+//                lineoption.geodesic(true)
+//            }
+//            mMap.addPolyline(lineoption)
+//        }
+//
+//
+//    }
 
     companion object {
         private const val DEFAULT_ZOOM = 13

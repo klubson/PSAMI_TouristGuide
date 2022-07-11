@@ -1,8 +1,8 @@
-package com.example.touristguide;
+package com.example.touristguide
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
-import android.content.Context;
+import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -15,6 +15,7 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME, null, 
     companion object {
         private val DATABASE_NAME = "tourist.db"
         private val DATABASE_VER = 9
+        private val SPOTS_FILE_NAME = "spots.json"
         private val SPOT_TABLE_NAME = "spots"
         private val SPOT_ID = "id"
         private val SPOT_NAME = "name"
@@ -27,6 +28,7 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME, null, 
         private val CATEGORY_ID = "id"
         private val CATEGORY_NAME = "category"
         private val CATEGORY_POLISH = "polish"
+        private val CATEGORIES_FILE_NAME = "categories.json"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -78,7 +80,7 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME, null, 
     fun getSpotsFromJSONFile(context: Context){
         val json: String
         try {
-            val iS = context.assets.open("spots.json")
+            val iS = context.assets.open(SPOTS_FILE_NAME)
             val size = iS.available()
             val buffer = ByteArray(size)
             iS.read(buffer)
@@ -108,7 +110,7 @@ class DBHelper(context: Context):SQLiteOpenHelper(context, DATABASE_NAME, null, 
     fun getCategoriesFromJSONFile(context: Context){
         val json: String
         try {
-            val iS = context.assets.open("categories.json")
+            val iS = context.assets.open(CATEGORIES_FILE_NAME)
             val size = iS.available()
             val buffer = ByteArray(size)
             iS.read(buffer)
