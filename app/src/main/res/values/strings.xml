@@ -10,6 +10,8 @@
     <string name="wikipediaLabel">Wikipedia</string>
     <string name="navigationLabel">Trasa</string>
     <string name="categoryPicker">Kategoria:</string>
+    <string name="totalTravelTime">Całkowity czas podróży: </string>
+    <string name="totalTravelDistance">Całkowita odległość do pokonania: </string>
     <string name="title_activity_navigation_to_spot">NavigationToSpotActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

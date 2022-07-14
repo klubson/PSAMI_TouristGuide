@@ -50,11 +50,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
     private lateinit var clearSearchBarButton: ImageButton
     private lateinit var closeSearchBarButton: ImageButton
     private lateinit var categorySpinner: Spinner
+    private lateinit var moreActionsCardView: CardView
     private lateinit var navigationCardView: CardView
+    private lateinit var totalTravelDistanceLabel: TextView
+    private lateinit var totalTravelDistanceValue: TextView
+    private lateinit var totalTravelTimeLabel: TextView
+    private lateinit var totalTravelTimeValue: TextView
     private lateinit var objectNameOnCardView: TextView
     private lateinit var googleSearchCardViewButton: ImageButton
     private lateinit var wikipediaSiteCardViewButton: ImageButton
-    private lateinit var navigationCardViewButton: ImageButton
+    private lateinit var createRouteCardViewButton: ImageButton
     private var locationPermissionGranted = false
     private var lastKnownLocation: Location? = null
     private val defaultLocation = LatLng( 52.40995297951002, 16.92583832833938)
@@ -64,6 +69,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
     private var chosenSpot : Spot? = null
     var chosenCategoryName : String? = null
     var chosenCategory : Category? = null
+    var totalTravelDistance : Int = 0
+    var totalTravelTime : Int = 0
 
     @RequiresApi(Build.VERSION_CODES.R)
     @SuppressLint("RestrictedApi")
@@ -100,7 +107,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
                 newLocation.latitude = chosenSpot!!.latitude!!
                 newLocation.longitude = chosenSpot!!.longitude!!
                 onLocationChanged(newLocation)
-                navigationCardView.visibility = View.VISIBLE
+                moreActionsCardView.visibility = View.VISIBLE
                 objectNameOnCardView.text = chosenSpot!!.name
             }
         }
@@ -140,16 +147,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
 
         clearSearchBarButton = findViewById(R.id.clearSearchBarButton)
         clearSearchBarButton.setOnClickListener {
-            resetSpotsListAndSelection(clearAutoCompleteTextView = true, clearMap = false)
+            resetSettings(clearAutoCompleteTextView = true, clearMap = false)
         }
         closeSearchBarButton = findViewById(R.id.closeSearchBarButton)
         closeSearchBarButton.setOnClickListener {
             changeObjectsVisbility(View.VISIBLE, View.INVISIBLE)
-            navigationCardView.visibility = View.INVISIBLE
-            resetSpotsListAndSelection(clearAutoCompleteTextView = false, clearMap = true)
+            moreActionsCardView.visibility = View.INVISIBLE
+            resetSettings(clearAutoCompleteTextView = true, clearMap = true)
         }
 
-        navigationCardView = findViewById(R.id.objectCardView)
+        moreActionsCardView = findViewById(R.id.spotCardView)
         objectNameOnCardView = findViewById(R.id.objectNameCardView)
         googleSearchCardViewButton = findViewById(R.id.googleCardViewButton)
         googleSearchCardViewButton.setOnClickListener {
@@ -168,17 +175,47 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
 
         }
 
-        navigationCardViewButton = findViewById(R.id.navigationCardViewButton)
-        navigationCardViewButton.setOnClickListener {
-            navigationCardView.visibility = View.INVISIBLE
+        navigationCardView = findViewById(R.id.navigationCardView)
+        totalTravelTimeLabel = findViewById(R.id.totalTravelTimeLabel)
+        totalTravelTimeValue = findViewById(R.id.totalTravelTimeValue)
+        totalTravelDistanceLabel = findViewById(R.id.totalTravelDistanceLabel)
+        totalTravelDistanceValue = findViewById(R.id.totalTravelDistanceValue)
+
+        createRouteCardViewButton = findViewById(R.id.navigationCardViewButton)
+        createRouteCardViewButton.setOnClickListener {
+            changeObjectsVisbility(View.VISIBLE, View.INVISIBLE)
+            moreActionsCardView.visibility = View.INVISIBLE
             val chosenSpotLatLng = chosenSpot?.latitude?.let { it1 -> chosenSpot!!.longitude?.let { it2 ->
                 LatLng(it1,
                     it2
                 )
             } }
             if (chosenSpotLatLng != null) {
-                createNavigationLine(defaultLocation, chosenSpotLatLng)
+                val spotsCoordinatesArray = ArrayList<LatLng>()
+                spotsCoordinatesArray.add(defaultLocation)
+                spotsCoordinatesArray.add(chosenSpotLatLng)
+                val pomnikHarcerski = databaseHandler.getSpotByName("Pomnik Harcerski")
+                if (pomnikHarcerski != null) {
+                    pomnikHarcerski.latitude?.let { it1 -> pomnikHarcerski.longitude?.let { it2 ->
+                        LatLng(it1,
+                            it2
+                        )
+                    } }
+                        ?.let { it2 -> spotsCoordinatesArray.add(it2) }
+                }
+                //createNavigationLine(defaultLocation, chosenSpotLatLng)
+                createNavigationLine(spotsCoordinatesArray)
+                println("dystans out: $totalTravelDistance")
+                println("czas out: $totalTravelTime")
+
             }
+
+
+
+            totalTravelDistanceValue.text = calculateDistanceAndFormatToString(totalTravelDistance)
+            totalTravelTimeValue.text = calculateTimeAndFormatToString(totalTravelTime)
+            navigationCardView.visibility = View.VISIBLE
+
         }
 
     }
@@ -200,7 +237,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         searchCardView.visibility = searchCardViewVisibility
     }
 
-    private fun resetSpotsListAndSelection(clearAutoCompleteTextView: Boolean, clearMap: Boolean){
+    private fun resetSettings(clearAutoCompleteTextView: Boolean, clearMap: Boolean){
         categorySpinner.setSelection(0)
         dataNamesOnly = databaseHandler.spotNames
         if(clearAutoCompleteTextView){
@@ -209,6 +246,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         if(clearMap){
             mMap.clear()
         }
+        totalTravelDistance = 0
+        totalTravelTime = 0
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -228,6 +267,38 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
     }
 
+    private fun createNavigationLine(spotsCoordinates : ArrayList<LatLng>){
+        for (i in 0 until spotsCoordinates.size - 1){
+            val url = getDirectionURL(spotsCoordinates[i], spotsCoordinates[i+1], GOOGLE_MAPS_API_KEY)
+            asyncTask(url)
+            mMap.addMarker(MarkerOptions().position(spotsCoordinates[i]))
+        }
+        mMap.addMarker(MarkerOptions().position(spotsCoordinates.last()))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 14F))
+    }
+
+    private fun calculateDistanceAndFormatToString(distanceInMetres : Int) : String{
+        return if (distanceInMetres < 1000){
+            "$distanceInMetres m"
+        } else {
+            (distanceInMetres.toDouble() / 1000.0).toString() + " km"
+        }
+    }
+
+    private fun calculateTimeAndFormatToString(timeInSeconds : Int) : String{
+        var minutes = timeInSeconds / 60
+        var hours = 0
+        while (minutes > 60){
+            hours += 1
+            minutes -= 60
+        }
+        return if (hours > 0){
+            hours.toString() + "h " + minutes.toString() + "min"
+        } else {
+            minutes.toString() + "min"
+        }
+    }
+
     private fun createNavigationLine(from : LatLng, to : LatLng){
         val url = getDirectionURL(from, to, GOOGLE_MAPS_API_KEY)
         mMap.addMarker(MarkerOptions().position(from))
@@ -245,7 +316,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
                 "&key=$secret"
     }
 
-    fun decodePolyline(encoded: String): List<LatLng> {
+    private fun decodePolyline(encoded: String): List<LatLng> {
         val poly = ArrayList<LatLng>()
         var index = 0
         val len = encoded.length
@@ -325,11 +396,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
             val client = OkHttpClient()
             val request = Request.Builder().url(url).build()
             val response = client.newCall(request).execute()
-            val data = response.body!!.string()
+            val data = response.body?.string()
 
             val result =  ArrayList<List<LatLng>>()
             try{
                 val respObj = Gson().fromJson(data, MapData::class.java)
+                totalTravelTime += respObj.routes[0].legs[0].duration.value
+                totalTravelDistance += respObj.routes[0].legs[0].distance.value
+                println("dystans in: $totalTravelDistance")
+                println("czas in: $totalTravelTime")
                 val path =  ArrayList<LatLng>()
                 for (i in 0 until respObj.routes[0].legs[0].steps.size){
                     path.addAll(decodePolyline(respObj.routes[0].legs[0].steps[i].polyline.points))
@@ -351,43 +426,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
             }
         }
     }
-
-//    @SuppressLint("StaticFieldLeak")
-//    private inner class GetDirection(val url : String) : AsyncTask<Void, Void, List<List<LatLng>>>(){
-//        override fun doInBackground(vararg params: Void?): List<List<LatLng>> {
-//
-//            val client = OkHttpClient()
-//            val request = Request.Builder().url(url).build()
-//            val response = client.newCall(request).execute()
-//            val data = response.body!!.string()
-//
-//            val result =  ArrayList<List<LatLng>>()
-//            try{
-//                val respObj = Gson().fromJson(data, MapData::class.java)
-//                val path =  ArrayList<LatLng>()
-//                for (i in 0 until respObj.routes[0].legs[0].steps.size){
-//                    path.addAll(decodePolyline(respObj.routes[0].legs[0].steps[i].polyline.points))
-//                }
-//                result.add(path)
-//            }catch (e:Exception){
-//                e.printStackTrace()
-//            }
-//            return result
-//        }
-//
-//        override fun onPostExecute(result: List<List<LatLng>>) {
-//            val lineoption = PolylineOptions()
-//            for (i in result.indices){
-//                lineoption.addAll(result[i])
-//                lineoption.width(10f)
-//                lineoption.color(Color.GREEN)
-//                lineoption.geodesic(true)
-//            }
-//            mMap.addPolyline(lineoption)
-//        }
-//
-//
-//    }
 
     companion object {
         private const val DEFAULT_ZOOM = 13
