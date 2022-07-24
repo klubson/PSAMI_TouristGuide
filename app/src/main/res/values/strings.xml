@@ -19,6 +19,8 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="show_spots_list">Pokaż trasę</string>
+    <string name="erase_route">Wyczyść trasę</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>

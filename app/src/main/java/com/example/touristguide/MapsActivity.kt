@@ -35,7 +35,10 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.util.*
 import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
+import kotlin.math.round
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
 
@@ -56,6 +59,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
     private lateinit var totalTravelDistanceValue: TextView
     private lateinit var totalTravelTimeLabel: TextView
     private lateinit var totalTravelTimeValue: TextView
+    private lateinit var eraseRouteButton: Button
     private lateinit var objectNameOnCardView: TextView
     private lateinit var googleSearchCardViewButton: ImageButton
     private lateinit var wikipediaSiteCardViewButton: ImageButton
@@ -67,10 +71,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
     var categoriesPolishNames : ArrayList<String>? = null
     private var chosenSpotName : String? = null
     private var chosenSpot : Spot? = null
+    private var chosenSpotLatLng : LatLng? = null
     var chosenCategoryName : String? = null
     var chosenCategory : Category? = null
-    var totalTravelDistance : Int = 0
-    var totalTravelTime : Int = 0
+    var totalTravelDistance : Int = 0 //used in threads
+    var totalTravelTime : Int = 0 //used in threads
+    var totalTravelDistanceParam : Int = 0 //used in activity
+    var totalTravelTimeParam : Int = 0 //used in activity
 
     @RequiresApi(Build.VERSION_CODES.R)
     @SuppressLint("RestrictedApi")
@@ -185,7 +192,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         createRouteCardViewButton.setOnClickListener {
             changeObjectsVisbility(View.VISIBLE, View.INVISIBLE)
             moreActionsCardView.visibility = View.INVISIBLE
-            val chosenSpotLatLng = chosenSpot?.latitude?.let { it1 -> chosenSpot!!.longitude?.let { it2 ->
+            chosenSpotLatLng = chosenSpot?.latitude?.let { it1 -> chosenSpot!!.longitude?.let { it2 ->
                 LatLng(it1,
                     it2
                 )
@@ -193,7 +200,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
             if (chosenSpotLatLng != null) {
                 val spotsCoordinatesArray = ArrayList<LatLng>()
                 spotsCoordinatesArray.add(defaultLocation)
-                spotsCoordinatesArray.add(chosenSpotLatLng)
+                spotsCoordinatesArray.add(chosenSpotLatLng!!)
                 val pomnikHarcerski = databaseHandler.getSpotByName("Pomnik Harcerski")
                 if (pomnikHarcerski != null) {
                     pomnikHarcerski.latitude?.let { it1 -> pomnikHarcerski.longitude?.let { it2 ->
@@ -205,16 +212,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
                 }
                 //createNavigationLine(defaultLocation, chosenSpotLatLng)
                 createNavigationLine(spotsCoordinatesArray)
-                println("dystans out: $totalTravelDistance")
-                println("czas out: $totalTravelTime")
+                totalTravelDistanceValue.text = calculateDistanceAndFormatToString(totalTravelDistanceParam)
+                totalTravelTimeValue.text = calculateTimeAndFormatToString(totalTravelTimeParam)
+                navigationCardView.visibility = View.VISIBLE
 
             }
 
+        }
 
-
-            totalTravelDistanceValue.text = calculateDistanceAndFormatToString(totalTravelDistance)
-            totalTravelTimeValue.text = calculateTimeAndFormatToString(totalTravelTime)
-            navigationCardView.visibility = View.VISIBLE
+        eraseRouteButton = findViewById(R.id.eraseRouteButton)
+        eraseRouteButton.setOnClickListener{
+            navigationCardView.visibility = View.INVISIBLE
+            moreActionsCardView.visibility = View.VISIBLE
+            mMap.clear()
+            chosenSpotLatLng?.let { it1 -> MarkerOptions().position(it1) }
+                ?.let { it2 -> mMap.addMarker(it2) }
+            //resetDistanceAndTimeValues()
 
         }
 
@@ -246,8 +259,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         if(clearMap){
             mMap.clear()
         }
+        resetDistanceAndTimeValues()
+    }
+
+    private fun resetDistanceAndTimeValues(){
         totalTravelDistance = 0
+        totalTravelDistanceParam = 0
         totalTravelTime = 0
+        totalTravelTimeParam = 0
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -281,22 +300,32 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         return if (distanceInMetres < 1000){
             "$distanceInMetres m"
         } else {
-            (distanceInMetres.toDouble() / 1000.0).toString() + " km"
+            (round((distanceInMetres.toDouble() / 1000.0) * 100.0) / 100.0).toString() + " km"
         }
     }
 
     private fun calculateTimeAndFormatToString(timeInSeconds : Int) : String{
-        var minutes = timeInSeconds / 60
+        var minutes = round(timeInSeconds / 60.0)
         var hours = 0
         while (minutes > 60){
             hours += 1
             minutes -= 60
         }
         return if (hours > 0){
-            hours.toString() + "h " + minutes.toString() + "min"
+            hours.toString() + "h " + minutes.toInt().toString() + "min"
         } else {
-            minutes.toString() + "min"
+            minutes.toInt().toString() + "min"
         }
+    }
+
+    private fun setTotalDurationValue(totalTime : Int){
+        totalTravelTimeParam = totalTime
+        println(totalTravelTimeParam)
+    }
+
+    private fun setTotalDistanceValue(totalDistance : Int){
+        totalTravelDistanceParam = totalDistance
+        println(totalTravelDistanceParam)
     }
 
     private fun createNavigationLine(from : LatLng, to : LatLng){
@@ -403,8 +432,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
                 val respObj = Gson().fromJson(data, MapData::class.java)
                 totalTravelTime += respObj.routes[0].legs[0].duration.value
                 totalTravelDistance += respObj.routes[0].legs[0].distance.value
-                println("dystans in: $totalTravelDistance")
-                println("czas in: $totalTravelTime")
+                setTotalDistanceValue(totalTravelDistance)
+                setTotalDurationValue(totalTravelTime)
                 val path =  ArrayList<LatLng>()
                 for (i in 0 until respObj.routes[0].legs[0].steps.size){
                     path.addAll(decodePolyline(respObj.routes[0].legs[0].steps[i].polyline.points))
