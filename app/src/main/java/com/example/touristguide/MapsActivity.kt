@@ -64,6 +64,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
     private lateinit var googleSearchCardViewButton: ImageButton
     private lateinit var wikipediaSiteCardViewButton: ImageButton
     private lateinit var createRouteCardViewButton: ImageButton
+    private lateinit var calculateDistanceAndTimeCardView: CardView
     private var locationPermissionGranted = false
     private var lastKnownLocation: Location? = null
     private val defaultLocation = LatLng( 52.40995297951002, 16.92583832833938)
@@ -214,7 +215,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
                 createNavigationLine(spotsCoordinatesArray)
                 totalTravelDistanceValue.text = calculateDistanceAndFormatToString(totalTravelDistanceParam)
                 totalTravelTimeValue.text = calculateTimeAndFormatToString(totalTravelTimeParam)
-                navigationCardView.visibility = View.VISIBLE
 
             }
 
@@ -230,6 +230,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
             //resetDistanceAndTimeValues()
 
         }
+
+        calculateDistanceAndTimeCardView = findViewById(R.id.distanceAndTimeCalculatingCardView)
 
     }
 
@@ -287,13 +289,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
     }
 
     private fun createNavigationLine(spotsCoordinates : ArrayList<LatLng>){
+
         for (i in 0 until spotsCoordinates.size - 1){
             val url = getDirectionURL(spotsCoordinates[i], spotsCoordinates[i+1], GOOGLE_MAPS_API_KEY)
+            calculateDistanceAndTimeCardView.visibility = View.VISIBLE
             asyncTask(url)
             mMap.addMarker(MarkerOptions().position(spotsCoordinates[i]))
+            //calculateDistanceAndTimeCardView.visibility = View.INVISIBLE
+            //navigationCardView.visibility = View.VISIBLE
         }
         mMap.addMarker(MarkerOptions().position(spotsCoordinates.last()))
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 14F))
+
+
     }
 
     private fun calculateDistanceAndFormatToString(distanceInMetres : Int) : String{
@@ -328,14 +336,24 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         println(totalTravelDistanceParam)
     }
 
-    private fun createNavigationLine(from : LatLng, to : LatLng){
-        val url = getDirectionURL(from, to, GOOGLE_MAPS_API_KEY)
-        mMap.addMarker(MarkerOptions().position(from))
-        mMap.addMarker(MarkerOptions().position(to))
-        asyncTask(url)
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 14F))
-
-    }
+//    private fun createNavigationLine(from : LatLng, to : LatLng){
+//        val url = getDirectionURL(from, to, GOOGLE_MAPS_API_KEY)
+//        mMap.addMarker(MarkerOptions().position(from))
+//        mMap.addMarker(MarkerOptions().position(to))
+//        val thread = Thread(){
+//            run {
+//                calculateDistanceAndTimeCardView.visibility = View.VISIBLE
+//                asyncTask(url)
+//            }
+//            runOnUiThread(){
+//                calculateDistanceAndTimeCardView.visibility = View.INVISIBLE
+//                navigationCardView.visibility = View.VISIBLE
+//            }
+//        }
+//
+//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 14F))
+//
+//    }
 
     private fun getDirectionURL(origin:LatLng, dest:LatLng, secret: String) : String{
         return "https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}" +

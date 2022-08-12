@@ -21,6 +21,7 @@
     <string name="action_settings">Settings</string>
     <string name="show_spots_list">Pokaż trasę</string>
     <string name="erase_route">Wyczyść trasę</string>
+    <string name="calculating_distance_and_time">Obliczanie długości i czasu trwania trasy...</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
