@@ -35,7 +35,6 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.util.*
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 import kotlin.math.round
@@ -95,12 +94,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         placesClient = Places.createClient(this)
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-
         initializeComponents()
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -215,6 +212,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
                 createNavigationLine(spotsCoordinatesArray)
                 totalTravelDistanceValue.text = calculateDistanceAndFormatToString(totalTravelDistanceParam)
                 totalTravelTimeValue.text = calculateTimeAndFormatToString(totalTravelTimeParam)
+                navigationCardView.visibility = View.VISIBLE
 
             }
 
@@ -292,16 +290,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
 
         for (i in 0 until spotsCoordinates.size - 1){
             val url = getDirectionURL(spotsCoordinates[i], spotsCoordinates[i+1], GOOGLE_MAPS_API_KEY)
-            calculateDistanceAndTimeCardView.visibility = View.VISIBLE
             asyncTask(url)
             mMap.addMarker(MarkerOptions().position(spotsCoordinates[i]))
-            //calculateDistanceAndTimeCardView.visibility = View.INVISIBLE
-            //navigationCardView.visibility = View.VISIBLE
         }
         mMap.addMarker(MarkerOptions().position(spotsCoordinates.last()))
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 14F))
-
-
     }
 
     private fun calculateDistanceAndFormatToString(distanceInMetres : Int) : String{
@@ -326,7 +319,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         }
     }
 
-    private fun setTotalDurationValue(totalTime : Int){
+    private fun setTotalTimeValue(totalTime : Int){
         totalTravelTimeParam = totalTime
         println(totalTravelTimeParam)
     }
@@ -335,25 +328,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         totalTravelDistanceParam = totalDistance
         println(totalTravelDistanceParam)
     }
-
-//    private fun createNavigationLine(from : LatLng, to : LatLng){
-//        val url = getDirectionURL(from, to, GOOGLE_MAPS_API_KEY)
-//        mMap.addMarker(MarkerOptions().position(from))
-//        mMap.addMarker(MarkerOptions().position(to))
-//        val thread = Thread(){
-//            run {
-//                calculateDistanceAndTimeCardView.visibility = View.VISIBLE
-//                asyncTask(url)
-//            }
-//            runOnUiThread(){
-//                calculateDistanceAndTimeCardView.visibility = View.INVISIBLE
-//                navigationCardView.visibility = View.VISIBLE
-//            }
-//        }
-//
-//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 14F))
-//
-//    }
 
     private fun getDirectionURL(origin:LatLng, dest:LatLng, secret: String) : String{
         return "https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}" +
@@ -451,7 +425,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
                 totalTravelTime += respObj.routes[0].legs[0].duration.value
                 totalTravelDistance += respObj.routes[0].legs[0].distance.value
                 setTotalDistanceValue(totalTravelDistance)
-                setTotalDurationValue(totalTravelTime)
+                setTotalTimeValue(totalTravelTime)
                 val path =  ArrayList<LatLng>()
                 for (i in 0 until respObj.routes[0].legs[0].steps.size){
                     path.addAll(decodePolyline(respObj.routes[0].legs[0].steps[i].polyline.points))
