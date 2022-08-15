@@ -8,7 +8,10 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -18,6 +21,17 @@ import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.touristguide.BuildConfig.GOOGLE_MAPS_API_KEY
+import com.example.touristguide.Helpers.CalculatingHelpers.Companion.calculateDistanceAndFormatToString
+import com.example.touristguide.Helpers.CalculatingHelpers.Companion.calculateTimeAndFormatToString
+import com.example.touristguide.Helpers.CalculatingHelpers.Companion.decodePolyline
+import com.example.touristguide.Helpers.CalculatingHelpers.Companion.totalTravelDistance
+import com.example.touristguide.Helpers.CalculatingHelpers.Companion.totalTravelTime
+import com.example.touristguide.Helpers.MapHelpers.Companion.DEFAULT_ZOOM
+import com.example.touristguide.Helpers.MapHelpers.Companion.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+import com.example.touristguide.Helpers.MapHelpers.Companion.defaultLocation
+import com.example.touristguide.Helpers.MapHelpers.Companion.getDirectionURL
+import com.example.touristguide.Helpers.MapHelpers.Companion.lastKnownLocation
+import com.example.touristguide.Helpers.MapHelpers.Companion.locationPermissionGranted
 import com.example.touristguide.NavigationClasses.MapData
 import com.example.touristguide.databinding.ActivityMapsBinding
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -36,8 +50,6 @@ import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.Executors
-import kotlin.collections.ArrayList
-import kotlin.math.round
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
 
@@ -45,39 +57,37 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
     private lateinit var mMap: GoogleMap
     private lateinit var placesClient: PlacesClient
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var autoCompleteTextView: AutoCompleteTextView
+
     private lateinit var databaseHandler: DBHelper
+
+    private lateinit var autoCompleteTextView: AutoCompleteTextView
     private lateinit var showSearchBarButton: ImageButton
     private lateinit var searchCardView: CardView
     private lateinit var clearSearchBarButton: ImageButton
     private lateinit var closeSearchBarButton: ImageButton
     private lateinit var categorySpinner: Spinner
+
     private lateinit var moreActionsCardView: CardView
+    private lateinit var objectNameOnCardView: TextView
+    private lateinit var googleSearchCardViewButton: ImageButton
+    private lateinit var wikipediaSiteCardViewButton: ImageButton
+    private lateinit var createRouteCardViewButton: ImageButton
+
     private lateinit var navigationCardView: CardView
     private lateinit var totalTravelDistanceLabel: TextView
     private lateinit var totalTravelDistanceValue: TextView
     private lateinit var totalTravelTimeLabel: TextView
     private lateinit var totalTravelTimeValue: TextView
     private lateinit var eraseRouteButton: Button
-    private lateinit var objectNameOnCardView: TextView
-    private lateinit var googleSearchCardViewButton: ImageButton
-    private lateinit var wikipediaSiteCardViewButton: ImageButton
-    private lateinit var createRouteCardViewButton: ImageButton
-    private lateinit var calculateDistanceAndTimeCardView: CardView
-    private var locationPermissionGranted = false
-    private var lastKnownLocation: Location? = null
-    private val defaultLocation = LatLng( 52.40995297951002, 16.92583832833938)
+
     var dataNamesOnly: ArrayList<String>? = null
     var categoriesPolishNames : ArrayList<String>? = null
+
     private var chosenSpotName : String? = null
     private var chosenSpot : Spot? = null
     private var chosenSpotLatLng : LatLng? = null
     var chosenCategoryName : String? = null
     var chosenCategory : Category? = null
-    var totalTravelDistance : Int = 0 //used in threads
-    var totalTravelTime : Int = 0 //used in threads
-    var totalTravelDistanceParam : Int = 0 //used in activity
-    var totalTravelTimeParam : Int = 0 //used in activity
 
     @RequiresApi(Build.VERSION_CODES.R)
     @SuppressLint("RestrictedApi")
@@ -208,11 +218,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
                     } }
                         ?.let { it2 -> spotsCoordinatesArray.add(it2) }
                 }
-                //createNavigationLine(defaultLocation, chosenSpotLatLng)
                 createNavigationLine(spotsCoordinatesArray)
-                totalTravelDistanceValue.text = calculateDistanceAndFormatToString(totalTravelDistanceParam)
-                totalTravelTimeValue.text = calculateTimeAndFormatToString(totalTravelTimeParam)
-                navigationCardView.visibility = View.VISIBLE
 
             }
 
@@ -225,32 +231,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
             mMap.clear()
             chosenSpotLatLng?.let { it1 -> MarkerOptions().position(it1) }
                 ?.let { it2 -> mMap.addMarker(it2) }
-            //resetDistanceAndTimeValues()
-
+            resetDistanceAndTimeValues()
         }
-
-        calculateDistanceAndTimeCardView = findViewById(R.id.distanceAndTimeCalculatingCardView)
-
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-
-    private fun changeObjectsVisbility(
+    fun changeObjectsVisbility(
         showButtonVisibility: Int,
         searchCardViewVisibility: Int){
         showSearchBarButton.visibility = showButtonVisibility
         searchCardView.visibility = searchCardViewVisibility
     }
 
-    private fun resetSettings(clearAutoCompleteTextView: Boolean, clearMap: Boolean){
+    fun resetSettings(clearAutoCompleteTextView: Boolean, clearMap: Boolean){
         categorySpinner.setSelection(0)
         dataNamesOnly = databaseHandler.spotNames
         if(clearAutoCompleteTextView){
@@ -262,11 +254,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         resetDistanceAndTimeValues()
     }
 
-    private fun resetDistanceAndTimeValues(){
+    fun resetDistanceAndTimeValues(){
         totalTravelDistance = 0
-        totalTravelDistanceParam = 0
         totalTravelTime = 0
-        totalTravelTimeParam = 0
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -295,78 +285,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         }
         mMap.addMarker(MarkerOptions().position(spotsCoordinates.last()))
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 14F))
-    }
-
-    private fun calculateDistanceAndFormatToString(distanceInMetres : Int) : String{
-        return if (distanceInMetres < 1000){
-            "$distanceInMetres m"
-        } else {
-            (round((distanceInMetres.toDouble() / 1000.0) * 100.0) / 100.0).toString() + " km"
-        }
-    }
-
-    private fun calculateTimeAndFormatToString(timeInSeconds : Int) : String{
-        var minutes = round(timeInSeconds / 60.0)
-        var hours = 0
-        while (minutes > 60){
-            hours += 1
-            minutes -= 60
-        }
-        return if (hours > 0){
-            hours.toString() + "h " + minutes.toInt().toString() + "min"
-        } else {
-            minutes.toInt().toString() + "min"
-        }
-    }
-
-    private fun setTotalTimeValue(totalTime : Int){
-        totalTravelTimeParam = totalTime
-        println(totalTravelTimeParam)
-    }
-
-    private fun setTotalDistanceValue(totalDistance : Int){
-        totalTravelDistanceParam = totalDistance
-        println(totalTravelDistanceParam)
-    }
-
-    private fun getDirectionURL(origin:LatLng, dest:LatLng, secret: String) : String{
-        return "https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}" +
-                "&destination=${dest.latitude},${dest.longitude}" +
-                "&sensor=false" +
-                "&mode=driving" +
-                "&key=$secret"
-    }
-
-    private fun decodePolyline(encoded: String): List<LatLng> {
-        val poly = ArrayList<LatLng>()
-        var index = 0
-        val len = encoded.length
-        var lat = 0
-        var lng = 0
-        while (index < len) {
-            var b: Int
-            var shift = 0
-            var result = 0
-            do {
-                b = encoded[index++].code - 63
-                result = result or (b and 0x1f shl shift)
-                shift += 5
-            } while (b >= 0x20)
-            val dlat = if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            lat += dlat
-            shift = 0
-            result = 0
-            do {
-                b = encoded[index++].code - 63
-                result = result or (b and 0x1f shl shift)
-                shift += 5
-            } while (b >= 0x20)
-            val dlng = if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            lng += dlng
-            val latLng = LatLng((lat.toDouble() / 1E5),(lng.toDouble() / 1E5))
-            poly.add(latLng)
-        }
-        return poly
     }
 
     private fun getLocationPermission() {
@@ -424,8 +342,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
                 val respObj = Gson().fromJson(data, MapData::class.java)
                 totalTravelTime += respObj.routes[0].legs[0].duration.value
                 totalTravelDistance += respObj.routes[0].legs[0].distance.value
-                setTotalDistanceValue(totalTravelDistance)
-                setTotalTimeValue(totalTravelTime)
                 val path =  ArrayList<LatLng>()
                 for (i in 0 until respObj.routes[0].legs[0].steps.size){
                     path.addAll(decodePolyline(respObj.routes[0].legs[0].steps[i].polyline.points))
@@ -444,13 +360,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
                     lineoption.geodesic(true)
                 }
                 mMap.addPolyline(lineoption)
+                totalTravelDistanceValue.text = calculateDistanceAndFormatToString(totalTravelDistance)
+                totalTravelTimeValue.text = calculateTimeAndFormatToString(totalTravelTime)
+                navigationCardView.visibility = View.VISIBLE
             }
         }
-    }
-
-    companion object {
-        private const val DEFAULT_ZOOM = 13
-        private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
     }
 
 }
