@@ -22,6 +22,7 @@
     <string name="show_spots_list">Pokaż trasę</string>
     <string name="erase_route">Wyczyść trasę</string>
     <string name="calculating_distance_and_time">Obliczanie długości i czasu trwania trasy...</string>
+    <string name="route_steps_label">Przebieg trasy:</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>

@@ -20,18 +20,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.touristguide.BuildConfig.GOOGLE_MAPS_API_KEY
 import com.example.touristguide.Helpers.CalculatingHelpers.Companion.calculateDistanceAndFormatToString
 import com.example.touristguide.Helpers.CalculatingHelpers.Companion.calculateTimeAndFormatToString
 import com.example.touristguide.Helpers.CalculatingHelpers.Companion.decodePolyline
 import com.example.touristguide.Helpers.CalculatingHelpers.Companion.totalTravelDistance
 import com.example.touristguide.Helpers.CalculatingHelpers.Companion.totalTravelTime
-import com.example.touristguide.Helpers.MapHelpers.Companion.DEFAULT_ZOOM
-import com.example.touristguide.Helpers.MapHelpers.Companion.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
-import com.example.touristguide.Helpers.MapHelpers.Companion.defaultLocation
-import com.example.touristguide.Helpers.MapHelpers.Companion.getDirectionURL
-import com.example.touristguide.Helpers.MapHelpers.Companion.lastKnownLocation
-import com.example.touristguide.Helpers.MapHelpers.Companion.locationPermissionGranted
+import com.example.touristguide.Helpers.MapAndRouteHelpers
+import com.example.touristguide.Helpers.MapAndRouteHelpers.Companion.DEFAULT_ZOOM
+import com.example.touristguide.Helpers.MapAndRouteHelpers.Companion.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+import com.example.touristguide.Helpers.MapAndRouteHelpers.Companion.getDirectionURL
+import com.example.touristguide.Helpers.MapAndRouteHelpers.Companion.lastKnownLocation
+import com.example.touristguide.Helpers.MapAndRouteHelpers.Companion.locationPermissionGranted
 import com.example.touristguide.NavigationClasses.MapData
 import com.example.touristguide.databinding.ActivityMapsBinding
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -51,7 +53,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.Executors
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, SpotsListAdapter.OnItemClickListener{
 
     private lateinit var binding: ActivityMapsBinding
     private lateinit var mMap: GoogleMap
@@ -79,6 +81,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
     private lateinit var totalTravelTimeLabel: TextView
     private lateinit var totalTravelTimeValue: TextView
     private lateinit var eraseRouteButton: Button
+    private lateinit var showRouteButton: Button
+
+    private lateinit var spotsListCardView: CardView
+    private lateinit var spotsListCardViewCloseButton: ImageButton
+    private lateinit var spotsListRecyclerView: RecyclerView
+    private lateinit var spotsListAdapter: SpotsListAdapter
 
     var dataNamesOnly: ArrayList<String>? = null
     var categoriesPolishNames : ArrayList<String>? = null
@@ -88,6 +96,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
     private var chosenSpotLatLng : LatLng? = null
     var chosenCategoryName : String? = null
     var chosenCategory : Category? = null
+    var route : Route? = null
+
+    private val spotsCoordinatesArray = ArrayList<Spot>()
 
     @RequiresApi(Build.VERSION_CODES.R)
     @SuppressLint("RestrictedApi")
@@ -105,6 +116,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         initializeComponents()
+        MapAndRouteHelpers.setDefaultSpot()
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -200,25 +212,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         createRouteCardViewButton.setOnClickListener {
             changeObjectsVisbility(View.VISIBLE, View.INVISIBLE)
             moreActionsCardView.visibility = View.INVISIBLE
-            chosenSpotLatLng = chosenSpot?.latitude?.let { it1 -> chosenSpot!!.longitude?.let { it2 ->
-                LatLng(it1,
-                    it2
-                )
-            } }
-            if (chosenSpotLatLng != null) {
-                val spotsCoordinatesArray = ArrayList<LatLng>()
-                spotsCoordinatesArray.add(defaultLocation)
-                spotsCoordinatesArray.add(chosenSpotLatLng!!)
-                val pomnikHarcerski = databaseHandler.getSpotByName("Pomnik Harcerski")
-                if (pomnikHarcerski != null) {
-                    pomnikHarcerski.latitude?.let { it1 -> pomnikHarcerski.longitude?.let { it2 ->
-                        LatLng(it1,
-                            it2
-                        )
-                    } }
-                        ?.let { it2 -> spotsCoordinatesArray.add(it2) }
-                }
-                createNavigationLine(spotsCoordinatesArray)
+            if (chosenSpot != null) {
+                spotsCoordinatesArray.add(MapAndRouteHelpers.getDefaultSpot())
+                spotsCoordinatesArray.add(chosenSpot!!)
+                databaseHandler.getSpotByName("Pomnik Harcerski")
+                    ?.let { it1 -> spotsCoordinatesArray.add(it1) }
+                route = Route()
+                route!!.setSpotsList(spotsCoordinatesArray)
+                createNavigationLine(route!!.getSpotsList())
 
             }
 
@@ -231,18 +232,37 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
             mMap.clear()
             chosenSpotLatLng?.let { it1 -> MarkerOptions().position(it1) }
                 ?.let { it2 -> mMap.addMarker(it2) }
-            resetDistanceAndTimeValues()
+            resetRouteParameters()
         }
+
+        showRouteButton = findViewById(R.id.showSpotsList)
+        showRouteButton.setOnClickListener {
+            spotsListAdapter = SpotsListAdapter(spotsCoordinatesArray, this)
+            spotsListRecyclerView.adapter = spotsListAdapter
+            spotsListRecyclerView.layoutManager = LinearLayoutManager(this)
+            spotsListRecyclerView.setHasFixedSize(true)
+            navigationCardView.visibility = View.INVISIBLE
+            spotsListCardView.visibility = View.VISIBLE
+        }
+
+        spotsListCardView = findViewById(R.id.spotsListCardView)
+        spotsListCardViewCloseButton = findViewById(R.id.closeSpotsListCardView)
+        spotsListCardViewCloseButton.setOnClickListener {
+            spotsListCardView.visibility = View.INVISIBLE
+            navigationCardView.visibility = View.VISIBLE
+        }
+        spotsListRecyclerView = findViewById(R.id.spotsListRecyclerView)
+
     }
 
-    fun changeObjectsVisbility(
+    private fun changeObjectsVisbility(
         showButtonVisibility: Int,
         searchCardViewVisibility: Int){
         showSearchBarButton.visibility = showButtonVisibility
         searchCardView.visibility = searchCardViewVisibility
     }
 
-    fun resetSettings(clearAutoCompleteTextView: Boolean, clearMap: Boolean){
+    private fun resetSettings(clearAutoCompleteTextView: Boolean, clearMap: Boolean){
         categorySpinner.setSelection(0)
         dataNamesOnly = databaseHandler.spotNames
         if(clearAutoCompleteTextView){
@@ -251,12 +271,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         if(clearMap){
             mMap.clear()
         }
-        resetDistanceAndTimeValues()
+        resetRouteParameters()
     }
 
-    fun resetDistanceAndTimeValues(){
+    private fun resetRouteParameters(){
         totalTravelDistance = 0
         totalTravelTime = 0
+        spotsCoordinatesArray.clear()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -276,15 +297,31 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
     }
 
-    private fun createNavigationLine(spotsCoordinates : ArrayList<LatLng>){
-
-        for (i in 0 until spotsCoordinates.size - 1){
-            val url = getDirectionURL(spotsCoordinates[i], spotsCoordinates[i+1], GOOGLE_MAPS_API_KEY)
-            asyncTask(url)
-            mMap.addMarker(MarkerOptions().position(spotsCoordinates[i]))
+    private fun createNavigationLine(spots : ArrayList<Spot>){
+        val arraySize = spots.size
+        for (index in 0 until arraySize-1){
+            val originLatLng = spots[index].latitude?.let { spots[index].longitude?.let { it1 ->
+                LatLng(it,
+                    it1
+                )
+            } }
+            val destinationLatLng = spots[index+1].latitude?.let { spots[index+1].longitude?.let { it1 ->
+                LatLng(it,
+                    it1
+                )
+            } }
+            val url = getDirectionURL(originLatLng!!, destinationLatLng!!, GOOGLE_MAPS_API_KEY)
+            asyncTask(index, arraySize-2, url)
+            originLatLng.let { MarkerOptions().position(it) }.let { mMap.addMarker(it) }
         }
-        mMap.addMarker(MarkerOptions().position(spotsCoordinates.last()))
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 14F))
+        val lastSpotLatLng = spots.last().latitude?.let { spots.last().longitude?.let { it1 ->
+            LatLng(it,
+                it1
+            )
+        } }
+        lastSpotLatLng?.let { MarkerOptions().position(it) }?.let { mMap.addMarker(it) }
+        MapAndRouteHelpers.getDefaultSpotLatLng()
+            ?.let { CameraUpdateFactory.newLatLngZoom(it, 14F) }?.let { mMap.animateCamera(it) }
     }
 
     private fun getLocationPermission() {
@@ -300,8 +337,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
 
     @SuppressLint("MissingPermission")
     private fun getDeviceLocation() {
-        mMap.moveCamera(CameraUpdateFactory
-            .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat()))
+        MapAndRouteHelpers.getDefaultSpotLatLng()?.let {
+            CameraUpdateFactory
+                .newLatLngZoom(it, DEFAULT_ZOOM.toFloat())
+        }?.let { mMap.moveCamera(it) }
         mMap.uiSettings.isMyLocationButtonEnabled = true
 
         try {
@@ -317,8 +356,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
                                     lastKnownLocation!!.longitude), DEFAULT_ZOOM.toFloat()))
                         }
                     } else {
-                        mMap.moveCamera(CameraUpdateFactory
-                            .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat()))
+                        MapAndRouteHelpers.getDefaultSpotLatLng()?.let {
+                            CameraUpdateFactory
+                                .newLatLngZoom(it, DEFAULT_ZOOM.toFloat())
+                        }?.let { mMap.moveCamera(it) }
                         mMap.uiSettings.isMyLocationButtonEnabled = true
                     }
                 }
@@ -328,20 +369,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
         }
     }
 
-    private fun asyncTask(url : String){
+    private fun asyncTask(index: Int, loopsCount: Int, url: String?){
         val executor = Executors.newSingleThreadExecutor()
         val handler = Handler(Looper.getMainLooper())
         executor.execute {
             val client = OkHttpClient()
-            val request = Request.Builder().url(url).build()
-            val response = client.newCall(request).execute()
-            val data = response.body?.string()
+            val request = url?.let { Request.Builder().url(it).build() }
+            val response = request?.let { client.newCall(it).execute() }
+            val data = response?.body?.string()
 
             val result =  ArrayList<List<LatLng>>()
             try{
                 val respObj = Gson().fromJson(data, MapData::class.java)
-                totalTravelTime += respObj.routes[0].legs[0].duration.value
-                totalTravelDistance += respObj.routes[0].legs[0].distance.value
+                route?.addToTotalTime(respObj.routes[0].legs[0].duration.value)
+                route?.addToTotalDistance(respObj.routes[0].legs[0].distance.value)
                 val path =  ArrayList<LatLng>()
                 for (i in 0 until respObj.routes[0].legs[0].steps.size){
                     path.addAll(decodePolyline(respObj.routes[0].legs[0].steps[i].polyline.points))
@@ -360,9 +401,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener{
                     lineoption.geodesic(true)
                 }
                 mMap.addPolyline(lineoption)
-                totalTravelDistanceValue.text = calculateDistanceAndFormatToString(totalTravelDistance)
-                totalTravelTimeValue.text = calculateTimeAndFormatToString(totalTravelTime)
-                navigationCardView.visibility = View.VISIBLE
+                if (index == loopsCount){
+                    totalTravelDistanceValue.text = route?.let { calculateDistanceAndFormatToString(it.getTotalDistance()) }
+                    totalTravelTimeValue.text = route?.let { calculateTimeAndFormatToString(it.getTotalTime()) }
+                    navigationCardView.visibility = View.VISIBLE
+                }
+
             }
         }
     }
