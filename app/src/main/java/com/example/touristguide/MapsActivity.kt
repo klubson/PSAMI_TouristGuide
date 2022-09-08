@@ -22,12 +22,11 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.beust.klaxon.Klaxon
 import com.example.touristguide.BuildConfig.GOOGLE_MAPS_API_KEY
 import com.example.touristguide.Helpers.CalculatingHelpers.Companion.calculateDistanceAndFormatToString
 import com.example.touristguide.Helpers.CalculatingHelpers.Companion.calculateTimeAndFormatToString
 import com.example.touristguide.Helpers.CalculatingHelpers.Companion.decodePolyline
-import com.example.touristguide.Helpers.CalculatingHelpers.Companion.totalTravelDistance
-import com.example.touristguide.Helpers.CalculatingHelpers.Companion.totalTravelTime
 import com.example.touristguide.Helpers.MapAndRouteHelpers
 import com.example.touristguide.Helpers.MapAndRouteHelpers.Companion.DEFAULT_ZOOM
 import com.example.touristguide.Helpers.MapAndRouteHelpers.Companion.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
@@ -49,9 +48,13 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.gson.Gson
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import okhttp3.*
+import okio.ByteString.Companion.encodeUtf8
+import java.io.IOException
+import java.util.*
 import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
+import kotlin.math.abs
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, SpotsListAdapter.OnItemClickListener{
 
@@ -71,9 +74,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
 
     private lateinit var moreActionsCardView: CardView
     private lateinit var objectNameOnCardView: TextView
-    private lateinit var googleSearchCardViewButton: ImageButton
-    private lateinit var wikipediaSiteCardViewButton: ImageButton
-    private lateinit var createRouteCardViewButton: ImageButton
+    private lateinit var googleSearchImageButton: ImageButton
+    private lateinit var wikipediaImageButton: ImageButton
+    private lateinit var createRouteImageButton: ImageButton
+    private lateinit var tripImageButton: ImageButton
 
     private lateinit var navigationCardView: CardView
     private lateinit var totalTravelDistanceLabel: TextView
@@ -88,6 +92,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
     private lateinit var spotsListRecyclerView: RecyclerView
     private lateinit var spotsListAdapter: SpotsListAdapter
 
+    private lateinit var tripSettingCardView: CardView
+    private lateinit var tripStartTimeSpinner: Spinner
+    private lateinit var tripEndTimeSpinner: Spinner
+    private lateinit var tripCategorySpinner: Spinner
+    private lateinit var clearTripCardButton: ImageButton
+    private lateinit var closeTripCardButton: ImageButton
+    private lateinit var showTripButton: Button
+
     var dataNamesOnly: ArrayList<String>? = null
     var categoriesPolishNames : ArrayList<String>? = null
 
@@ -99,6 +111,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
     var route : Route? = null
 
     private val spotsCoordinatesArray = ArrayList<Spot>()
+
+    private var startTimePositionIndex : Int = 0
+    private var endTimePositionIndex : Int = 0
+    private val client = OkHttpClient()
+
+    private var spotListFromApi = ArrayList<Spot>()
 
     @RequiresApi(Build.VERSION_CODES.R)
     @SuppressLint("RestrictedApi")
@@ -144,7 +162,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
         }
 
         searchCardView = findViewById(R.id.searchCardView)
-        categorySpinner = findViewById(R.id.spinner)
+        categorySpinner = findViewById(R.id.categoryPickerSearchCard)
         categoriesPolishNames = databaseHandler.categoriesPolishNames
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesPolishNames!!)
         categorySpinner.adapter = adapter
@@ -172,27 +190,29 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
             }
         }
 
-        clearSearchBarButton = findViewById(R.id.clearSearchBarButton)
+        clearSearchBarButton = findViewById(R.id.clearSearchBarButtonSearchCard)
         clearSearchBarButton.setOnClickListener {
             resetSettings(clearAutoCompleteTextView = true, clearMap = false)
         }
-        closeSearchBarButton = findViewById(R.id.closeSearchBarButton)
+        closeSearchBarButton = findViewById(R.id.closeSearchBarButtonSearchCard)
         closeSearchBarButton.setOnClickListener {
             changeObjectsVisbility(View.VISIBLE, View.INVISIBLE)
             moreActionsCardView.visibility = View.INVISIBLE
-            resetSettings(clearAutoCompleteTextView = true, clearMap = true)
+            //resetSettings(clearAutoCompleteTextView = true, clearMap = true)
+            //resetRouteParameters()
+            navigationCardView.visibility = View.INVISIBLE
         }
 
         moreActionsCardView = findViewById(R.id.spotCardView)
         objectNameOnCardView = findViewById(R.id.objectNameCardView)
-        googleSearchCardViewButton = findViewById(R.id.googleCardViewButton)
-        googleSearchCardViewButton.setOnClickListener {
+        googleSearchImageButton = findViewById(R.id.googleSearchImageButton)
+        googleSearchImageButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_WEB_SEARCH)
             intent.putExtra(SearchManager.QUERY, chosenSpotName)
             startActivity(intent)
         }
-        wikipediaSiteCardViewButton = findViewById(R.id.wikiCardViewButton)
-        wikipediaSiteCardViewButton.setOnClickListener {
+        wikipediaImageButton = findViewById(R.id.wikipediaImageButton)
+        wikipediaImageButton.setOnClickListener {
             if (chosenSpot?.url != ""){
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(chosenSpot?.url))
                 startActivity(intent)
@@ -202,29 +222,36 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
 
         }
 
-        navigationCardView = findViewById(R.id.navigationCardView)
-        totalTravelTimeLabel = findViewById(R.id.totalTravelTimeLabel)
-        totalTravelTimeValue = findViewById(R.id.totalTravelTimeValue)
-        totalTravelDistanceLabel = findViewById(R.id.totalTravelDistanceLabel)
-        totalTravelDistanceValue = findViewById(R.id.totalTravelDistanceValue)
-
-        createRouteCardViewButton = findViewById(R.id.navigationCardViewButton)
-        createRouteCardViewButton.setOnClickListener {
+        createRouteImageButton = findViewById(R.id.createRouteImageButton)
+        createRouteImageButton.setOnClickListener {
             changeObjectsVisbility(View.VISIBLE, View.INVISIBLE)
             moreActionsCardView.visibility = View.INVISIBLE
+            resetRouteParameters()
             if (chosenSpot != null) {
                 spotsCoordinatesArray.add(MapAndRouteHelpers.getDefaultSpot())
                 spotsCoordinatesArray.add(chosenSpot!!)
-                databaseHandler.getSpotByName("Pomnik Harcerski")
-                    ?.let { it1 -> spotsCoordinatesArray.add(it1) }
-                route = Route()
-                route!!.setSpotsList(spotsCoordinatesArray)
-                createNavigationLine(route!!.getSpotsList())
+//                databaseHandler.getSpotByName("Pomnik Harcerski")
+//                    ?.let { it1 -> spotsCoordinatesArray.add(it1) }
+//                route = Route()
+//                route!!.setSpotsList(spotsCoordinatesArray)
+                createNavigationLine(spotsCoordinatesArray)
 
             }
 
         }
 
+        tripImageButton = findViewById(R.id.tripImageButton)
+        tripImageButton.setOnClickListener {
+            moreActionsCardView.visibility = View.INVISIBLE
+            searchCardView.visibility = View.INVISIBLE
+            tripSettingCardView.visibility = View.VISIBLE
+        }
+
+        navigationCardView = findViewById(R.id.navigationCardView)
+        totalTravelTimeLabel = findViewById(R.id.totalTravelTimeLabel)
+        totalTravelTimeValue = findViewById(R.id.totalTravelTimeValue)
+        totalTravelDistanceLabel = findViewById(R.id.totalTravelDistanceLabel)
+        totalTravelDistanceValue = findViewById(R.id.totalTravelDistanceValue)
         eraseRouteButton = findViewById(R.id.eraseRouteButton)
         eraseRouteButton.setOnClickListener{
             navigationCardView.visibility = View.INVISIBLE
@@ -253,7 +280,149 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
         }
         spotsListRecyclerView = findViewById(R.id.spotsListRecyclerView)
 
+        tripSettingCardView = findViewById(R.id.tripSettingsCardView)
+        tripStartTimeSpinner = findViewById(R.id.tripStartTimePicker)
+        val timeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, createAdapterForTimePicker())
+        tripStartTimeSpinner.adapter = timeAdapter
+        tripStartTimeSpinner.onItemSelectedListener = object:
+            AdapterView.OnItemSelectedListener {
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                startTimePositionIndex = position
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
+        tripEndTimeSpinner = findViewById(R.id.tripEndTimePicker)
+        tripEndTimeSpinner.adapter = timeAdapter
+        tripEndTimeSpinner.onItemSelectedListener = object:
+            AdapterView.OnItemSelectedListener {
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                endTimePositionIndex = position
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
+        tripCategorySpinner = findViewById(R.id.categoryPickerTripCard)
+        tripCategorySpinner.adapter = adapter
+        tripCategorySpinner.onItemSelectedListener = object:
+            AdapterView.OnItemSelectedListener {
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
+        clearTripCardButton = findViewById(R.id.clearSearchBarButtonTripCard)
+        clearTripCardButton.setOnClickListener {
+            tripStartTimeSpinner.setSelection(0)
+            tripEndTimeSpinner.setSelection(0)
+            tripCategorySpinner.setSelection(0)
+        }
+        closeTripCardButton = findViewById(R.id.closeSearchBarButtonTripCard)
+        closeTripCardButton.setOnClickListener {
+            tripSettingCardView.visibility = View.INVISIBLE
+            searchCardView.visibility = View.VISIBLE
+            moreActionsCardView.visibility = View.VISIBLE
+        }
+        showTripButton = findViewById(R.id.showTripButton)
+        showTripButton.setOnClickListener {
+            if(tripStartTimeSpinner.selectedItem == 0 || tripEndTimeSpinner.selectedItem == 0){
+
+            }
+            else {
+                createTrip(tripStartTimeSpinner.selectedItemId.toInt(), tripEndTimeSpinner.selectedItemId.toInt())
+            }
+        }
+
+
     }
+
+    private fun createTrip(startPosition : Int, endPosition : Int){
+        val tripTime = calculateTripTime(startPosition, endPosition)
+        getTimeToFirst()
+        chosenSpot?.id?.let { route?.let { it1 -> getSpotListFromApi(it, tripTime, it1.getTotalTime()) } }
+        resetSettings(true, true)
+        createNavigationLine(spotListFromApi)
+    }
+
+    private fun calculateTripTime(startPosition : Int, endPosition : Int) : Int{
+        return abs(endPosition - startPosition) *15
+    }
+
+    private fun getTimeToFirst(){
+        val array = java.util.ArrayList<Spot>()
+        array.add(MapAndRouteHelpers.getDefaultSpot())
+        array.add(chosenSpot!!)
+        createNavigationLine(array)
+    }
+
+    private fun callApi(url: String) {
+        val request = Request.Builder()
+            .url(url)
+            .build()
+
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.println(Log.ERROR,"error","API execute failed")
+            }
+            override fun onResponse(call: Call, response: Response) {
+                spotListFromApi = Klaxon().parseArray<Spot>(response.body.toString()) as ArrayList<Spot>
+            }
+        })
+    }
+
+    private fun getSpotListFromApi(startSpotID : Int, fullTime : Int, timeToFirst : Int){
+        val baseURL = "https://37uw3xmyg9.execute-api.eu-central-1.amazonaws.com/test/road?"
+//        val requestString = """{ "id": $startSpotID,
+//            |                    "full_time": $fullTime,
+//            |                    "time_to_first": $timeToFirst}""".trimMargin()
+        val requestString = baseURL + "id=" + startSpotID + "&full_time=" +  fullTime + "&time_to_first=" + timeToFirst
+        requestString.encodeUtf8()
+        //val a = requestString.toByte()
+        callApi(requestString)
+        spotListFromApi.add(0, MapAndRouteHelpers.getDefaultSpot())
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("SimpleDateFormat")
+    private fun createAdapterForTimePicker() : ArrayList<String> {
+        val whateverDateYouWant = Date()
+        val calendar = Calendar.getInstance()
+        calendar.time = whateverDateYouWant
+
+        val unroundedMinutes = calendar[Calendar.MINUTE]
+        val mod = unroundedMinutes % 15
+        calendar.add(Calendar.MINUTE, if (mod < 8) -mod else 15 - mod)
+
+        val timeArray = ArrayList<String>()
+        timeArray.add("wybierz")
+        for(i in 1..96){
+            var hours = calendar.time.hours.toString()
+            if (hours.length == 1){
+                hours = "0$hours"
+            }
+            var minutes = calendar.time.minutes.toString()
+            if (minutes == "0"){
+                minutes = "00"
+            }
+            timeArray.add("$hours:$minutes")
+            calendar.add(Calendar.MINUTE, 15)
+        }
+        return timeArray
+    }
+
 
     private fun changeObjectsVisbility(
         showButtonVisibility: Int,
@@ -275,8 +444,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
     }
 
     private fun resetRouteParameters(){
-        totalTravelDistance = 0
-        totalTravelTime = 0
+        route = null
+//        totalTravelDistance = 0
+//        totalTravelTime = 0
         spotsCoordinatesArray.clear()
     }
 
@@ -293,11 +463,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
         )
         mMap.animateCamera(cameraUpdate)
         mMap.clear()
-        mMap.addMarker(MarkerOptions().position(latLng))
+        //mMap.addMarker(MarkerOptions().position(latLng))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
     }
 
     private fun createNavigationLine(spots : ArrayList<Spot>){
+        route = Route()
+        route!!.setSpotsList(spots)
         val arraySize = spots.size
         for (index in 0 until arraySize-1){
             val originLatLng = spots[index].latitude?.let { spots[index].longitude?.let { it1 ->

@@ -46,14 +46,14 @@
                     tools:ignore="LabelFor" />
 
                 <ImageButton
-                    android:id="@+id/clearSearchBarButton"
+                    android:id="@+id/clearSearchBarButtonSearchCard"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:visibility="visible"
                     app:srcCompat="@android:drawable/ic_menu_delete" />
 
                 <ImageButton
-                    android:id="@+id/closeSearchBarButton"
+                    android:id="@+id/closeSearchBarButtonSearchCard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
@@ -68,17 +68,17 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/spinnerLabel"
+                    android:id="@+id/categoryPickerSearchCardLabel"
                     android:layout_width="200dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/categoryPicker"
+                    android:text="@string/category_picker"
                     android:textAlignment="center"
                     android:textColor="#000000"
                     android:textStyle="bold" />
 
                 <Spinner
-                    android:id="@+id/spinner"
+                    android:id="@+id/categoryPickerSearchCard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
@@ -86,6 +86,117 @@
 
         </LinearLayout>
 
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/tripSettingsCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="312dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tripStartTimeLabel"
+                            android:layout_width="158dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/trip_start_time_label"
+                            android:textStyle="bold" />
+
+                        <Spinner
+                            android:id="@+id/tripStartTimePicker"
+                            android:layout_width="158dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tripEndTimeLabel"
+                            android:layout_width="310dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/trip_end_time_label"
+                            android:textStyle="bold" />
+
+                        <Spinner
+                            android:id="@+id/tripEndTimePicker"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/clearSearchBarButtonTripCard"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:visibility="visible"
+                    app:srcCompat="@android:drawable/ic_menu_delete" />
+
+                <ImageButton
+                    android:id="@+id/closeSearchBarButtonTripCard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:visibility="visible"
+                    app:srcCompat="@drawable/places_ic_clear" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/categoryPickerTripCardLabel"
+                    android:layout_width="311dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/category_picker"
+                    android:textAlignment="center"
+                    android:textColor="#000000"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/categoryPickerTripCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/showTripButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/navigation_label" />
+
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
@@ -111,7 +222,7 @@
                     android:id="@+id/totalTravelDistanceLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="@string/totalTravelDistance"
+                    android:text="@string/total_travel_distance"
                     android:textSize="18sp" />
 
                 <TextView
@@ -133,7 +244,7 @@
                     android:id="@+id/totalTravelTimeLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="@string/totalTravelTime"
+                    android:text="@string/total_travel_time"
                     android:textSize="18sp" />
 
                 <TextView
@@ -192,11 +303,14 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="30dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginBottom="20dp"
                     android:orientation="vertical">
 
                     <ImageButton
-                        android:id="@+id/googleCardViewButton"
+                        android:id="@+id/googleSearchImageButton"
                         android:layout_width="75dp"
                         android:layout_height="75dp"
                         android:visibility="visible"
@@ -206,7 +320,7 @@
                         android:id="@+id/googleLabel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/googleLabel"
+                        android:text="@string/google_label"
                         android:textAlignment="center"
                         android:visibility="visible" />
 
@@ -215,11 +329,14 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="30dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginBottom="20dp"
                     android:orientation="vertical">
 
                     <ImageButton
-                        android:id="@+id/wikiCardViewButton"
+                        android:id="@+id/wikipediaImageButton"
                         android:layout_width="75dp"
                         android:layout_height="75dp"
                         android:visibility="visible"
@@ -229,7 +346,7 @@
                         android:id="@+id/wikipediaLabel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/wikipediaLabel"
+                        android:text="@string/wikipedia_label"
                         android:textAlignment="center"
                         android:visibility="visible" />
 
@@ -238,20 +355,46 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="30dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginBottom="20dp"
                     android:orientation="vertical">
 
                     <ImageButton
-                        android:id="@+id/navigationCardViewButton"
+                        android:id="@+id/createRouteImageButton"
                         android:layout_width="75dp"
                         android:layout_height="75dp"
                         app:srcCompat="@android:drawable/ic_menu_directions" />
 
                     <TextView
-                        android:id="@+id/navigationLabel"
+                        android:id="@+id/createRouteLabel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/navigationLabel"
+                        android:text="@string/navigation_label"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginBottom="20dp">
+
+                    <ImageButton
+                        android:id="@+id/tripImageButton"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        app:srcCompat="@android:drawable/ic_menu_directions" />
+
+                    <TextView
+                        android:id="@+id/tripImageLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/show_spots_label"
                         android:textAlignment="center" />
                 </LinearLayout>
 
@@ -275,7 +418,7 @@
             android:background="#D71F5BD5">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
@@ -295,14 +438,14 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/spotsListRecyclerView"
-                    android:layout_width="361dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </LinearLayout>
 
             <ImageButton
                 android:id="@+id/closeSpotsListCardView"
                 android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#D71F5BD5"
                 app:srcCompat="@android:drawable/btn_dialog" />

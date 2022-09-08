@@ -2,16 +2,26 @@
     <string name="app_name">Przewodnik Turystyczny</string>
     <string name="title_activity_maps">Przewodnik Turystyczny</string>
     <string name="title_activity_loading">Pobieranie danych</string>
-    <string name="creatingDatabase">Tworzenie bazy danych…</string>
+    <string name="creating_database">Tworzenie bazy danych…</string>
     <string name="findButton">Znajdź</string>
     <string name="hint">szukaj</string>
     <string name="szukaj">Szukaj…</string>
-    <string name="googleLabel">Google</string>
-    <string name="wikipediaLabel">Wikipedia</string>
-    <string name="navigationLabel">Trasa</string>
-    <string name="categoryPicker">Kategoria:</string>
-    <string name="totalTravelTime">Całkowity czas podróży: </string>
-    <string name="totalTravelDistance">Całkowita odległość do pokonania: </string>
+    <string name="google_label">Google</string>
+    <string name="wikipedia_label">Wikipedia</string>
+    <string name="navigation_label">Pokaż trasę</string>
+    <string name="show_spots_label">Wycieczka</string>
+    <string name="trip_start_time_label">Początek wycieczki: </string>
+    <string name="trip_end_time_label">Koniec wycieczki: </string>
+    <string name="category_picker">Kategoria:</string>
+    <string name="total_travel_time">Całkowity czas podróży: </string>
+    <string name="total_travel_distance">Całkowita odległość do pokonania: </string>
+    <string name="show_spots_list">Pokaż trasę</string>
+    <string name="erase_route">Wyczyść trasę</string>
+    <string name="calculating_distance_and_time">Obliczanie długości i czasu trwania trasy...</string>
+    <string name="route_steps_label">Przebieg trasy:</string>
+
+
+
     <string name="title_activity_navigation_to_spot">NavigationToSpotActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -19,11 +29,6 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-    <string name="show_spots_list">Pokaż trasę</string>
-    <string name="erase_route">Wyczyść trasę</string>
-    <string name="calculating_distance_and_time">Obliczanie długości i czasu trwania trasy...</string>
-    <string name="route_steps_label">Przebieg trasy:</string>
-
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>

@@ -8,9 +8,11 @@
         <entry key="..\:/Users/torre/Desktop/PSAMI_TouristGuide/app/src/main/res/layout/content_navigation_to_spot.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/torre/OneDrive/Pulpit/PSAMI_TouristGuide/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2985" />
         <entry key="..\:/Users/torre/OneDrive/Pulpit/PSAMI_TouristGuide/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2985" />
+        <entry key="..\:/Users/torre/OneDrive/Pulpit/PSAMI_TouristGuide/app/src/main/res/layout/activity_create_route.xml" value="0.18802083333333333" />
         <entry key="..\:/Users/torre/OneDrive/Pulpit/PSAMI_TouristGuide/app/src/main/res/layout/activity_loading.xml" value="0.358695652173913" />
         <entry key="..\:/Users/torre/OneDrive/Pulpit/PSAMI_TouristGuide/app/src/main/res/layout/activity_maps.xml" value="0.358695652173913" />
         <entry key="..\:/Users/torre/OneDrive/Pulpit/PSAMI_TouristGuide/app/src/main/res/layout/spot_list_item.xml" value="0.35688405797101447" />
+        <entry key="..\:/Users/torre/OneDrive/Pulpit/PSAMI_TouristGuide/app/src/main/res/menu/navigation_to_spot.xml" value="0.18802083333333333" />
       </map>
     </option>
   </component>
