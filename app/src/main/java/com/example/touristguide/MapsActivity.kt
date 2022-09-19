@@ -3,6 +3,7 @@ package com.example.touristguide
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -49,7 +50,8 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.gson.Gson
 import okhttp3.*
-import okio.ByteString.Companion.encodeUtf8
+import org.json.JSONArray
+import org.json.JSONException
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.Executors
@@ -74,6 +76,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
 
     private lateinit var moreActionsCardView: CardView
     private lateinit var objectNameOnCardView: TextView
+    private lateinit var closeMoreActionsCardView: ImageButton
     private lateinit var googleSearchImageButton: ImageButton
     private lateinit var wikipediaImageButton: ImageButton
     private lateinit var createRouteImageButton: ImageButton
@@ -103,14 +106,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
     var dataNamesOnly: ArrayList<String>? = null
     var categoriesPolishNames : ArrayList<String>? = null
 
-    private var chosenSpotName : String? = null
     private var chosenSpot : Spot? = null
     private var chosenSpotLatLng : LatLng? = null
     var chosenCategoryName : String? = null
     var chosenCategory : Category? = null
     var route : Route? = null
 
-    private val spotsCoordinatesArray = ArrayList<Spot>()
+    private val testing : Boolean = true
+    private var roadType : Boolean = true //true -> wycieczka, false -> nawigacja
+
+    private var spotsCoordinatesArray = ArrayList<Spot>()
 
     private var startTimePositionIndex : Int = 0
     private var endTimePositionIndex : Int = 0
@@ -158,7 +163,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
         }
         showSearchBarButton = findViewById(R.id.showSearchBarButton)
         showSearchBarButton.setOnClickListener {
-            changeObjectsVisbility(View.INVISIBLE, View.VISIBLE)
+            showSearchBarButton.visibility = View.INVISIBLE
+            searchCardView.visibility = View.VISIBLE
         }
 
         searchCardView = findViewById(R.id.searchCardView)
@@ -196,7 +202,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
         }
         closeSearchBarButton = findViewById(R.id.closeSearchBarButtonSearchCard)
         closeSearchBarButton.setOnClickListener {
-            changeObjectsVisbility(View.VISIBLE, View.INVISIBLE)
+            showSearchBarButton.visibility = View.VISIBLE
+            searchCardView.visibility = View.INVISIBLE
             moreActionsCardView.visibility = View.INVISIBLE
             //resetSettings(clearAutoCompleteTextView = true, clearMap = true)
             //resetRouteParameters()
@@ -205,10 +212,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
 
         moreActionsCardView = findViewById(R.id.spotCardView)
         objectNameOnCardView = findViewById(R.id.objectNameCardView)
+        closeMoreActionsCardView = findViewById(R.id.closeSpotCardViewButton)
+        closeMoreActionsCardView.setOnClickListener {
+            moreActionsCardView.visibility = View.INVISIBLE
+        }
         googleSearchImageButton = findViewById(R.id.googleSearchImageButton)
         googleSearchImageButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_WEB_SEARCH)
-            intent.putExtra(SearchManager.QUERY, chosenSpotName)
+            var searchPhrase = chosenSpot!!.name
+            if (!searchPhrase!!.contains("Pozna")){
+                searchPhrase = "$searchPhrase Poznań"
+            }
+            intent.putExtra(SearchManager.QUERY, searchPhrase)
             startActivity(intent)
         }
         wikipediaImageButton = findViewById(R.id.wikipediaImageButton)
@@ -224,7 +239,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
 
         createRouteImageButton = findViewById(R.id.createRouteImageButton)
         createRouteImageButton.setOnClickListener {
-            changeObjectsVisbility(View.VISIBLE, View.INVISIBLE)
+            roadType = false
+            showSearchBarButton.visibility = View.VISIBLE
+            searchCardView.visibility = View.INVISIBLE
             moreActionsCardView.visibility = View.INVISIBLE
             resetRouteParameters()
             if (chosenSpot != null) {
@@ -242,6 +259,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
 
         tripImageButton = findViewById(R.id.tripImageButton)
         tripImageButton.setOnClickListener {
+            roadType = true
             moreActionsCardView.visibility = View.INVISIBLE
             searchCardView.visibility = View.INVISIBLE
             tripSettingCardView.visibility = View.VISIBLE
@@ -260,6 +278,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
             chosenSpotLatLng?.let { it1 -> MarkerOptions().position(it1) }
                 ?.let { it2 -> mMap.addMarker(it2) }
             resetRouteParameters()
+            spotListFromApi.clear()
+            showSearchBarButton.visibility = View.VISIBLE
         }
 
         showRouteButton = findViewById(R.id.showSpotsList)
@@ -340,6 +360,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
 
             }
             else {
+                tripSettingCardView.visibility = View.INVISIBLE
                 createTrip(tripStartTimeSpinner.selectedItemId.toInt(), tripEndTimeSpinner.selectedItemId.toInt())
             }
         }
@@ -350,8 +371,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
     private fun createTrip(startPosition : Int, endPosition : Int){
         val tripTime = calculateTripTime(startPosition, endPosition)
         getTimeToFirst()
-        chosenSpot?.id?.let { route?.let { it1 -> getSpotListFromApi(it, tripTime, it1.getTotalTime()) } }
+        if (testing){
+            spotListFromApi = getTestRoad(this.baseContext)
+        } else {
+            chosenSpot?.id?.let { route?.let { it1 -> getSpotListFromApi(it, tripTime, it1.getTotalTime()) } }
+        }
+
+        spotListFromApi.add(0, MapAndRouteHelpers.getDefaultSpot())
+        for (spot in spotListFromApi) {
+            if (spot.avgtime != null){
+                route?.addToTotalAvgSpotsTime(spot.avgtime!!.toInt())
+            }
+        }
         resetSettings(true, true)
+        spotsCoordinatesArray = spotListFromApi
+
         createNavigationLine(spotListFromApi)
     }
 
@@ -377,21 +411,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
                 Log.println(Log.ERROR,"error","API execute failed")
             }
             override fun onResponse(call: Call, response: Response) {
-                spotListFromApi = Klaxon().parseArray<Spot>(response.body.toString()) as ArrayList<Spot>
+                val json = response.body!!.string()
+                Log.println(Log.DEBUG, "json", json)
+                spotListFromApi = Klaxon().parseArray<Spot>(response.body!!.string()) as ArrayList<Spot>
             }
         })
     }
 
     private fun getSpotListFromApi(startSpotID : Int, fullTime : Int, timeToFirst : Int){
-        val baseURL = "https://37uw3xmyg9.execute-api.eu-central-1.amazonaws.com/test/road?"
+            val baseURL = "https://37uw3xmyg9.execute-api.eu-central-1.amazonaws.com/test/road?"
 //        val requestString = """{ "id": $startSpotID,
 //            |                    "full_time": $fullTime,
 //            |                    "time_to_first": $timeToFirst}""".trimMargin()
-        val requestString = baseURL + "id=" + startSpotID + "&full_time=" +  fullTime + "&time_to_first=" + timeToFirst
-        requestString.encodeUtf8()
-        //val a = requestString.toByte()
-        callApi(requestString)
-        spotListFromApi.add(0, MapAndRouteHelpers.getDefaultSpot())
+            var requestString = baseURL + "id=" + startSpotID + "&full_time=" +  fullTime + "&time_to_first=" + timeToFirst
+            requestString = "https://37uw3xmyg9.execute-api.eu-central-1.amazonaws.com/test/road?id=40&full_time=70&time_to_first=3"
+//        requestString = "https://api.github.com/users/Evin1-/repos"
+            callApi(requestString)
     }
 
 
@@ -423,14 +458,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
         return timeArray
     }
 
-
-    private fun changeObjectsVisbility(
-        showButtonVisibility: Int,
-        searchCardViewVisibility: Int){
-        showSearchBarButton.visibility = showButtonVisibility
-        searchCardView.visibility = searchCardViewVisibility
-    }
-
     private fun resetSettings(clearAutoCompleteTextView: Boolean, clearMap: Boolean){
         categorySpinner.setSelection(0)
         dataNamesOnly = databaseHandler.spotNames
@@ -445,8 +472,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
 
     private fun resetRouteParameters(){
         route = null
-//        totalTravelDistance = 0
-//        totalTravelTime = 0
         spotsCoordinatesArray.clear()
     }
 
@@ -505,6 +530,39 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
         }
+    }
+
+    private fun getTestRoad(context: Context) : ArrayList<Spot>{
+        val spotsList = ArrayList<Spot>()
+        val json: String
+        try {
+            val iS = context.assets.open("testRoad.json")
+            val size = iS.available()
+            val buffer = ByteArray(size)
+            iS.read(buffer)
+            iS.close()
+
+            json = String(buffer)
+            val jsonArray = JSONArray(json)
+            for(i in 0 until jsonArray.length()){
+                val obj = jsonArray.getJSONObject(i)
+                val id = obj.getInt("id")
+                val name = obj.getString("name")
+                val latitude = obj.getDouble("latitude")
+                val longitude = obj.getDouble("longitude")
+                val avgtime = obj.getDouble("avgtime")
+                val category = obj.getString("category")
+                val url = obj.getString("url")
+                spotsList.add(Spot(id, name, latitude, longitude, avgtime, category, url))
+            }
+
+        } catch (e: IOException){
+            e.printStackTrace()
+        } catch (e: JSONException){
+            e.printStackTrace()
+        }
+
+        return spotsList
     }
 
     @SuppressLint("MissingPermission")
@@ -575,7 +633,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
                 mMap.addPolyline(lineoption)
                 if (index == loopsCount){
                     totalTravelDistanceValue.text = route?.let { calculateDistanceAndFormatToString(it.getTotalDistance()) }
-                    totalTravelTimeValue.text = route?.let { calculateTimeAndFormatToString(it.getTotalTime()) }
+                    totalTravelTimeValue.text = route?.let { calculateTimeAndFormatToString(it.getTotalTime() + it.getTotalAvgSpotsTime()) }
                     navigationCardView.visibility = View.VISIBLE
                 }
 
