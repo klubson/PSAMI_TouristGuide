@@ -12,14 +12,14 @@ class LoadingActivity : AppCompatActivity() {
     }
     lateinit var db: DBHelper
 
-    val thread = Thread(){
+    private val thread = Thread {
         run {
             //pobieranie bazy danych
             db = DBHelper(this)
             db.getSpotsFromJSONFile(this)
             db.getCategoriesFromJSONFile(this)
         }
-        runOnUiThread(){
+        runOnUiThread {
             // uruchomienie mapy po zakończeniu pobierania danych
             val intent = Intent(this, MapsActivity::class.java)
             startActivity(intent)

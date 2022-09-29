@@ -21,9 +21,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager.TAG
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.beust.klaxon.Klaxon
 import com.example.touristguide.BuildConfig.GOOGLE_MAPS_API_KEY
 import com.example.touristguide.Helpers.CalculatingHelpers.Companion.calculateDistanceAndFormatToString
 import com.example.touristguide.Helpers.CalculatingHelpers.Companion.calculateTimeAndFormatToString
@@ -49,14 +49,20 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.gson.Gson
+import com.google.maps.DirectionsApi
+import com.google.maps.DirectionsApiRequest
+import com.google.maps.GeoApiContext
 import okhttp3.*
 import org.json.JSONArray
 import org.json.JSONException
 import java.io.IOException
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
 import java.util.concurrent.Executors
-import kotlin.collections.ArrayList
 import kotlin.math.abs
+
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, SpotsListAdapter.OnItemClickListener{
 
@@ -110,16 +116,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
     private var chosenSpotLatLng : LatLng? = null
     var chosenCategoryName : String? = null
     var chosenCategory : Category? = null
-    var route : Route? = null
+    private var globalRoute : Route? = null
 
     private val testing : Boolean = true
+    private var drawRoute : Boolean = true
     private var roadType : Boolean = true //true -> wycieczka, false -> nawigacja
 
     private var spotsCoordinatesArray = ArrayList<Spot>()
 
     private var startTimePositionIndex : Int = 0
     private var endTimePositionIndex : Int = 0
-    private val client = OkHttpClient()
+    private var tripTime : Int = 0
 
     private var spotListFromApi = ArrayList<Spot>()
 
@@ -260,6 +267,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
         tripImageButton = findViewById(R.id.tripImageButton)
         tripImageButton.setOnClickListener {
             roadType = true
+            drawRoute = false
             moreActionsCardView.visibility = View.INVISIBLE
             searchCardView.visibility = View.INVISIBLE
             tripSettingCardView.visibility = View.VISIBLE
@@ -369,24 +377,65 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
     }
 
     private fun createTrip(startPosition : Int, endPosition : Int){
-        val tripTime = calculateTripTime(startPosition, endPosition)
+        tripTime = calculateTripTime(startPosition, endPosition)
         getTimeToFirst()
+
+
+        //thread.start()
+       // println(thread.isInterrupted)
+       // thread.interrupt()
         if (testing){
             spotListFromApi = getTestRoad(this.baseContext)
         } else {
-            chosenSpot?.id?.let { route?.let { it1 -> getSpotListFromApi(it, tripTime, it1.getTotalTime()) } }
+            //chosenSpot?.id?.let { route?.let { it1 -> getSpotListFromApi(it, tripTime, it1.getTotalTime()) } }
+            chosenSpot?.id?.let { getSpotListFromApi(it, tripTime, globalRoute!!.getTotalTime()).start() }
         }
 
         spotListFromApi.add(0, MapAndRouteHelpers.getDefaultSpot())
         for (spot in spotListFromApi) {
             if (spot.avgtime != null){
-                route?.addToTotalAvgSpotsTime(spot.avgtime!!.toInt())
+                globalRoute?.addToTotalAvgSpotsTime(spot.avgtime!!.toInt())
             }
         }
-        resetSettings(true, true)
+        resetSettings(clearAutoCompleteTextView = true, clearMap = true)
         spotsCoordinatesArray = spotListFromApi
-
+        drawRoute = true
         createNavigationLine(spotListFromApi)
+    }
+
+    private val thread = Thread {
+        run {
+            val baseURL = "https://37uw3xmyg9.execute-api.eu-central-1.amazonaws.com/test/road?"
+
+            val requestString = baseURL + "id=" + chosenSpot?.id + "&full_time=" +  tripTime + "&time_to_first=" + globalRoute?.getTotalTime()
+
+            val url = URL(requestString)
+            val connection = url.openConnection() as HttpURLConnection
+
+            if (connection.responseCode == 200){
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                println(inputStreamReader.readText())
+                spotListFromApi = Gson().fromJson(inputStreamReader, Array<Spot>::class.java).toList() as ArrayList<Spot>
+                inputStreamReader.close()
+                inputSystem.close()
+            }
+            else {
+                Log.println(Log.ERROR,"error","API execute failed")
+            }
+        }
+        runOnUiThread {
+            spotListFromApi.add(0, MapAndRouteHelpers.getDefaultSpot())
+            for (spot in spotListFromApi) {
+                if (spot.avgtime != null){
+                    globalRoute?.addToTotalAvgSpotsTime(spot.avgtime!!.toInt())
+                }
+            }
+            resetSettings(clearAutoCompleteTextView = true, clearMap = true)
+            spotsCoordinatesArray = spotListFromApi
+            drawRoute = true
+            createNavigationLine(spotListFromApi)
+        }
     }
 
     private fun calculateTripTime(startPosition : Int, endPosition : Int) : Int{
@@ -400,33 +449,26 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
         createNavigationLine(array)
     }
 
-    private fun callApi(url: String) {
-        val request = Request.Builder()
-            .url(url)
-            .build()
+    private fun getSpotListFromApi(startSpotID : Int, fullTime : Int, timeToFirst : Int) : Thread{
+        return Thread{
+            val baseURL = "https://37uw3xmyg9.execute-api.eu-central-1.amazonaws.com/test/road?"
 
+            val requestString = baseURL + "id=" + startSpotID + "&full_time=" +  fullTime + "&time_to_first=" + timeToFirst
 
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
+            val url = URL(requestString)
+            val connection = url.openConnection() as HttpURLConnection
+
+            if (connection.responseCode == 200){
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                spotListFromApi = Gson().fromJson(inputStreamReader, Array<Spot>::class.java).toList() as ArrayList<Spot>
+                inputStreamReader.close()
+                inputSystem.close()
+            }
+            else {
                 Log.println(Log.ERROR,"error","API execute failed")
             }
-            override fun onResponse(call: Call, response: Response) {
-                val json = response.body!!.string()
-                Log.println(Log.DEBUG, "json", json)
-                spotListFromApi = Klaxon().parseArray<Spot>(response.body!!.string()) as ArrayList<Spot>
-            }
-        })
-    }
-
-    private fun getSpotListFromApi(startSpotID : Int, fullTime : Int, timeToFirst : Int){
-            val baseURL = "https://37uw3xmyg9.execute-api.eu-central-1.amazonaws.com/test/road?"
-//        val requestString = """{ "id": $startSpotID,
-//            |                    "full_time": $fullTime,
-//            |                    "time_to_first": $timeToFirst}""".trimMargin()
-            var requestString = baseURL + "id=" + startSpotID + "&full_time=" +  fullTime + "&time_to_first=" + timeToFirst
-            requestString = "https://37uw3xmyg9.execute-api.eu-central-1.amazonaws.com/test/road?id=40&full_time=70&time_to_first=3"
-//        requestString = "https://api.github.com/users/Evin1-/repos"
-            callApi(requestString)
+        }
     }
 
 
@@ -471,12 +513,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
     }
 
     private fun resetRouteParameters(){
-        route = null
+        globalRoute = null
         spotsCoordinatesArray.clear()
+        tripTime = 0
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mMap.uiSettings.isZoomControlsEnabled = true
         getLocationPermission()
         getDeviceLocation()
     }
@@ -493,8 +537,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
     }
 
     private fun createNavigationLine(spots : ArrayList<Spot>){
-        route = Route()
-        route!!.setSpotsList(spots)
+        globalRoute = Route()
+        globalRoute!!.setSpotsList(spots)
         val arraySize = spots.size
         for (index in 0 until arraySize-1){
             val originLatLng = spots[index].latitude?.let { spots[index].longitude?.let { it1 ->
@@ -519,7 +563,83 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
         lastSpotLatLng?.let { MarkerOptions().position(it) }?.let { mMap.addMarker(it) }
         MapAndRouteHelpers.getDefaultSpotLatLng()
             ?.let { CameraUpdateFactory.newLatLngZoom(it, 14F) }?.let { mMap.animateCamera(it) }
+
+//        val latlngSpotList = ArrayList<LatLng>()
+//        for (spot in spots){
+//            val latLng = spot.latitude?.let { spot.longitude?.let { it1 -> LatLng(it, it1) } }
+//            latLng?.let { MarkerOptions().position(it) }?.let { mMap.addMarker(it) }
+//            latlngSpotList.add(latLng!!)
+//        }
+//
+//        drawRoute(latlngSpotList)
     }
+
+
+    @SuppressLint("RestrictedApi")
+    private fun drawRoute(spots : ArrayList<LatLng>){
+
+        val path = ArrayList<LatLng>()
+
+        val context: GeoApiContext = GeoApiContext.Builder()
+            .apiKey(GOOGLE_MAPS_API_KEY)
+            .build()
+        val req: DirectionsApiRequest =
+            DirectionsApi.getDirections(context, spots.first().toString(), spots.last().toString())
+
+        try {
+            val res = req.await()
+
+            //Loop through legs and steps to get encoded polylines of each step
+            if (res.routes != null && res.routes.isNotEmpty()) {
+                val route = res.routes[0]
+                if (route.legs != null) {
+                    for (i in route.legs.indices) {
+                        val leg = route.legs[i]
+                        if (leg.steps != null) {
+                            for (j in leg.steps.indices) {
+                                val step = leg.steps[j]
+                                if (step.steps != null && step.steps.isNotEmpty()) {
+                                    for (k in step.steps.indices) {
+                                        val step1 = step.steps[k]
+                                        val points1 = step1.polyline
+                                        if (points1 != null) {
+                                            //Decode polyline and add points to list of route coordinates
+                                            val coords1 = points1.decodePath()
+                                            for (coord1 in coords1) {
+                                                path.add(LatLng(coord1.lat, coord1.lng))
+
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    val points = step.polyline
+                                    if (points != null) {
+                                        //Decode polyline and add points to list of route coordinates
+                                        val coords = points.decodePath()
+                                        for (coord in coords) {
+                                            path.add(LatLng(coord.lat, coord.lng))
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (ex: java.lang.Exception) {
+            ex.localizedMessage?.let { Log.e(TAG, it) }
+        }
+
+        if (path.size > 0) {
+            val opts = PolylineOptions().addAll(path).color(Color.BLUE).width(10f)
+            mMap.addPolyline(opts)
+        }
+
+        MapAndRouteHelpers.getDefaultSpotLatLng()
+            ?.let { CameraUpdateFactory.newLatLng(it) }?.let { mMap.animateCamera(it) }
+
+    }
+
 
     private fun getLocationPermission() {
         if (ContextCompat.checkSelfPermission(this.applicationContext,
@@ -611,8 +731,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
             val result =  ArrayList<List<LatLng>>()
             try{
                 val respObj = Gson().fromJson(data, MapData::class.java)
-                route?.addToTotalTime(respObj.routes[0].legs[0].duration.value)
-                route?.addToTotalDistance(respObj.routes[0].legs[0].distance.value)
+                globalRoute?.addToTotalTime(respObj.routes[0].legs[0].duration.value)
+                globalRoute?.addToTotalDistance(respObj.routes[0].legs[0].distance.value)
                 val path =  ArrayList<LatLng>()
                 for (i in 0 until respObj.routes[0].legs[0].steps.size){
                     path.addAll(decodePolyline(respObj.routes[0].legs[0].steps[i].polyline.points))
@@ -623,17 +743,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, 
             }
 
             handler.post {
-                val lineoption = PolylineOptions()
-                for (i in result.indices){
-                    lineoption.addAll(result[i])
-                    lineoption.width(10f)
-                    lineoption.color(Color.GREEN)
-                    lineoption.geodesic(true)
+                if (drawRoute) {
+                    val lineoption = PolylineOptions()
+                    for (i in result.indices) {
+                        lineoption.addAll(result[i])
+                        lineoption.width(10f)
+                        lineoption.color(Color.GREEN)
+                        lineoption.geodesic(true)
+                    }
+                    mMap.addPolyline(lineoption)
                 }
-                mMap.addPolyline(lineoption)
                 if (index == loopsCount){
-                    totalTravelDistanceValue.text = route?.let { calculateDistanceAndFormatToString(it.getTotalDistance()) }
-                    totalTravelTimeValue.text = route?.let { calculateTimeAndFormatToString(it.getTotalTime() + it.getTotalAvgSpotsTime()) }
+                    totalTravelDistanceValue.text = globalRoute?.let { calculateDistanceAndFormatToString(it.getTotalDistance()) }
+                    totalTravelTimeValue.text = globalRoute?.let { calculateTimeAndFormatToString(it.getTotalTime() + it.getTotalAvgSpotsTime()) }
                     navigationCardView.visibility = View.VISIBLE
                 }
 

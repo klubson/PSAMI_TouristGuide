@@ -1,0 +1,56 @@
+[
+  {
+    "id": 40,
+    "name": "Pomnik Chopina",
+    "longitude": 52.405096810013454,
+    "latitude": 16.935206491542672,
+    "avgtime": 2,
+    "category": "monument",
+    "url": "https://pl.wikipedia.org/wiki/Fryderyk_Chopin"
+  },
+  {
+    "id": 34,
+    "name": "Pomnik Starego Marycha w Poznaniu",
+    "longitude": 52.405156553389325,
+    "latitude": 16.93120566702962,
+    "avgtime": 3,
+    "category": "monument",
+    "url": "https://pl.wikipedia.org/wiki/Pomnik_Starego_Marycha_w_Poznaniu"
+  },
+  {
+    "id": 33,
+    "name": "Pomnik Juliusza S\u0142owackiego",
+    "longitude": 52.40434800233747,
+    "latitude": 16.91739139946912,
+    "avgtime": 2,
+    "category": "monument",
+    "url": "https://pl.wikipedia.org/wiki/Pomnik_Juliusza_S%C5%82owackiego_w_Poznaniu"
+  },
+  {
+    "id": 32,
+    "name": "Pomnik Ignacego Jana Paderewskiego",
+    "longitude": 52.407023118560524,
+    "latitude": 16.91642031426407,
+    "avgtime": 2,
+    "category": "monument",
+    "url": "https://pl.wikipedia.org/wiki/Pomnik_Ignacego_Jana_Paderewskiego_w_Poznaniu"
+  },
+  {
+    "id": 39,
+    "name": "Pomnik Karola Marcinkowskiego",
+    "longitude": 52.41036637708506,
+    "latitude": 16.929317041534542,
+    "avgtime": 3,
+    "category": "monument",
+    "url": "https://pl.wikipedia.org/wiki/Pomnik_Karola_Marcinkowskiego_w_Poznaniu"
+  },
+  {
+    "id": 36,
+    "name": "Studzienka Bamberki w Poznaniu",
+    "longitude": 52.40846841465278,
+    "latitude": 16.93360892851953,
+    "avgtime": 2,
+    "category": "monument",
+    "url": "https://pl.wikipedia.org/wiki/Studzienka_Bamberki_w_Poznaniu"
+  }
+]

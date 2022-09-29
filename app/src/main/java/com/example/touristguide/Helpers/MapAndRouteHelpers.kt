@@ -18,7 +18,7 @@ class MapAndRouteHelpers {
             return "https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}" +
                     "&destination=${dest.latitude},${dest.longitude}" +
                     "&sensor=false" +
-                    "&mode=driving" +
+                    "&mode=walking" +
                     "&key=$secret"
         }
 
